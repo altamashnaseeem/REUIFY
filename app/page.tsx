@@ -1,9 +1,10 @@
-
+"use client";
 import { CgComponents } from "react-icons/cg";
 import { GrStorage } from "react-icons/gr";
 import { FaHistory } from "react-icons/fa";
 import { IoLogoWebComponent } from "react-icons/io5";
-import { useAuth } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+
 import Link from 'next/link';
 
   function Page(){
@@ -117,10 +118,14 @@ function Logo(){
 }
 
 function Buttons(){
-  const {userId}=useAuth();
+ const {user}=useUser();
+
+
+  
+    
      return (
        <div className='flex gap-2 max-sm:flex-col max-sm:w-full max-sm:mt-8'>
-       {userId?(
+       {!user?(
         <>
          <Link href="/sign-in">
           <button className=' max-sm:w-full text-sm  text-white bg-slate-900 p-[8px] px-6 rounded-md hover:opacity-80'>
@@ -140,7 +145,8 @@ function Buttons(){
          </Link>
         </>
        )}
-
+        
+        
        </div>
      )
 }
