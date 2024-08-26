@@ -1,8 +1,17 @@
 
-
+import Sidebar from "./Sidebar"
+import ContentArea from "./ContentArea"
 function Dashboard(){
 return (
-    <h1>Dashboard</h1>
+    
+<div className="flex">
+<Sidebar/>
+<ContentArea/>
+
+</div>
+
+    
+    
 )
 
 }
