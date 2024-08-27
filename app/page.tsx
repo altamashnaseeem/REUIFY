@@ -99,7 +99,7 @@ return (
 }
 
 
-export function Logo(){
+ function Logo(){
   return (
     <div className="flex gap-2 items-center  ">
        <CgComponents className='text-sky-400 text-[32px]'/>

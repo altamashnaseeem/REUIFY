@@ -1,10 +1,8 @@
 "use client";
 import React from "react";
 import { IoIosArrowBack } from "react-icons/io";
-import { Logo } from "../page";
-import { IoMdHome } from "react-icons/io";
-import { MdCategory } from "react-icons/md";
-import { MdFavorite } from "react-icons/md";
+import { CgComponents } from "react-icons/cg";
+
 import { TbLogout2 } from "react-icons/tb";
 import { UseAppContext } from "../ContextApi";
 function Sidebar(){
@@ -21,6 +19,24 @@ return (
 
 }
 
+
+function Logo(){
+    return (
+      <div className="flex gap-2 items-center  ">
+         <CgComponents className='text-sky-400 text-[32px]'/>
+        {/* App Name */}
+           <div className='flex gap-1 text-[22px]'>
+           <span className='font-medium text-black text-[22px]'>RE<span className='text-[28px] text-slate-900'>UI</span>FY</span>
+           {/* <span className='text-slate-600 font-medium'>shelf</span> */}
+           </div>
+          
+  
+       
+  
+      </div>
+  
+    )
+  }
 function ArrowIcon(){
     return (
         <div className="w-7 h-7 rounded-full absolute right-[-11px] top-[95px] flex items-center justify-center">
