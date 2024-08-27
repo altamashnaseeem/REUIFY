@@ -33,6 +33,7 @@ function ArrowIcon(){
 function Links(){
 
     const {menuItemsObject:{menuItems},}=UseAppContext();
+    console.log("USECONTEXT::",UseAppContext())
     
     return (
         <div className="mt-44 ml-3 flex flex-col gap-2 text-[15px]">
