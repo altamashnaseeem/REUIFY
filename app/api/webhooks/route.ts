@@ -1,12 +1,15 @@
+
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { WebhookEvent,EmailAddress } from '@clerk/nextjs/server'
+import { WebhookEvent } from '@clerk/nextjs/server'
 
 import User from "../../Models/UserSchema";
 import {connect} from "../../lib/connect";
 
 
 export async function POST(req: Request) {
+   console.log("CHECKKKKK")
+
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
