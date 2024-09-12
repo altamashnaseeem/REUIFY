@@ -1,7 +1,7 @@
 import { UseAppContext } from '@/app/ContextApi'
-import { AddOutlined, Category, Close, Delete, DragIndicatorRounded, EditRounded, KeyboardArrowDownRounded, SearchRounded } from '@mui/icons-material';
+import { AddOutlined, Category, Close, Delete, DragIndicatorRounded, EditRounded, KeyboardArrowDownRounded, Search, SearchRounded } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { EmptyProjectPlaceHolder } from './AllProjects';
 import { Project } from '@/app/allData';
 import { TextToIcon } from '@/app/utils/textToIcon';
@@ -9,16 +9,17 @@ function AllProjectsWindow() {
     const {openAllProjectsWindowObject:{openAllProjectsWindow},
    
 }=UseAppContext();
-   
+   const [searchQuery,setSearchQuery]=useState("");
+
   return (
     <div
     style={{display:openAllProjectsWindow?"block":"none"}}
     className='w-[70%] max-sm:w-[90%] p-9 border border-slate-50 h-[82%] bg-white rounded-xl shadow-md absolute left-1/2 top-8 -translate-x-1/2 z-50'
     >
      <Header/> 
-     <SearchBar/>
+     <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
       <SortByComponent/>
-      <ProjectsList/>
+      <ProjectsList searchQuery={searchQuery}/>
     </div>
   )
 }
@@ -51,14 +52,46 @@ function Header(){
               </div>
         </div>
 
-    )
+    ) 
 }
-function SearchBar(){
+function SearchBar({searchQuery,setSearchQuery}:{
+    searchQuery:string;
+    setSearchQuery:React.Dispatch<React.SetStateAction<string>>;
+
+}){
+const {openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
+  openProjectWindowObject:{openProjectWindow,setOpenProjectWindow}
+}=UseAppContext();
+const inputRef=useRef<HTMLInputElement>(null);
+useEffect(()=>{
+    // focus the input only when openAllProjectWindow opens true
+    if(openAllProjectsWindow){
+          const focusInput=()=>{
+            if(inputRef.current){
+                inputRef.current.focus();
+
+            }
+          };
+          if(!openProjectWindow){
+            //schedule focus setting for the next render
+            setTimeout(focusInput,0);
+
+          }
+    }
+},[openAllProjectsWindow,openProjectWindow]);
+const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
+    setSearchQuery(event.target.value);
+
+}
     return (
         <div className='flex gap-5 items-center justify-between mt-12 relative'>
             <div className={`h-[42px] bg-slate-50 flex items-center text-sm rounded-md pl-3 gap-1 w-[85%]`}>
                 <SearchRounded className='text-slate-400'/>
-                <input placeholder='Search a Project...' className='bg-transparent outline-none w-full font-light'/>
+                <input 
+                ref={inputRef}
+                value={searchQuery}
+                onChange={handleChange}
+                placeholder='Search a Project...' className='bg-transparent outline-none w-full font-light'/>
             </div>
             <button className='bg-sky-500 ml-2 p-[10px] flex w-[15%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
                 <AddOutlined sx={{fontSize:17}}
@@ -89,11 +122,13 @@ function SortByComponent(){
     </div>
    )
 }
-function ProjectsList(){
+function ProjectsList({searchQuery}:{searchQuery:string}){
     const {allProjectsObject:{allProjects},
         isLoadingObject:{isLoading}
 }=UseAppContext();
-
+const filterAllProjectsBySearchQuery=allProjects.filter((singleProject)=>
+singleProject.name.toLowerCase().includes(searchQuery.toLowerCase())
+)
     return (
      <div className='w-full bg-slate-50 h-[64%] rounded-lg p-3 flex flex-col gap-3'>
         {isLoading && (
@@ -105,16 +140,32 @@ function ProjectsList(){
         {allProjects.length===0 && !isLoading ?
          (<EmptyProjectPlaceHolder/>):
         ( <>
-          {allProjects.map((project,index)=>(
+          {filterAllProjectsBySearchQuery.length>0 ? (
+            <>
+          {filterAllProjectsBySearchQuery.map((project,index)=>(
             <SingleProject key={index} project={project}/>
           ))}
-         </> )  
-    }
+         </> ):(
+            <>{!isLoading && <NoFoundProjectSearched/>}</> 
+    )}
+    </>
+)}
      </div>
     )
 }
 
-
+function NoFoundProjectSearched(){
+    return (
+        <div className='p-1 gap-5 flex flex-col justify-center pt-[90px] items-center'>
+            <Search sx={{fontSize:80}} className='text-[70px] text-slate-200'/>
+            <div className=''>
+            <p className='text-gray-400 w-72 text-center text-[13px]'>
+                {`Oops! that project seems to be missing. Try searching with a different keyword`}
+            </p>
+            </div>
+        </div>
+    )
+}
 
 function SingleProject({project}:{project:Project}){
     return (
