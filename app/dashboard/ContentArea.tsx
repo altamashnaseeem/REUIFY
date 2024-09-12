@@ -1,10 +1,29 @@
-//https://l.instagram.com/?u=https%3A%2F%2Ft.me%2F%2BS4iJib-2IzdmMzY1&e=AT1ys_wF5iVGDqziwT5rNiDID3N4zdNXLsJRHrl0hZJd_xoUD5-2FSS1hJs7umguIzCsnMT0jWe9nGC9OLTqULb28FpHErJxg7MXvRL5s-1pi5DmpWnA-mE
+"use client"
+import { UseAppContext } from "../ContextApi";
+import AllProjects from "./components/AllProjects";
+import FavoriteComponent from "./components/FavoriteComponent";
+import StatsBar from "./components/StatsBar";
+import TopBar from "./components/TopBar";
 function ContentArea(){
+   const {showSideBarObject:{showSideBar},
+          isMobileViewObject:{isMobileView}
+  }=UseAppContext();
+                               
    return (
-       <div className="w-full h-screen bg-slate-50">
-
-        
+       <div className="w-full h-screen bg-slate-50 p-5">
+         <TopBar/>
+         {isMobileView && showSideBar && <SoftLayer/>}
+         <StatsBar/>
+         <AllProjects/>
+         <FavoriteComponent/>
        </div>
    )
+};
+                                                              
+function SoftLayer(){
+  return(
+    <div className="w-full h-full fixed top-0 right-0 bg-black opacity-30"></div>
+  )
 }
+
 export default ContentArea;
