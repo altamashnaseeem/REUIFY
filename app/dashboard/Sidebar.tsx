@@ -99,11 +99,12 @@ function ArrowIcon(){
 }
 function Links(){
     const {openSideBarObject:{openSideBar,setOpenSideBar},
-         openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow}
+         openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
+         openAllComponentsWindowObject:{setOpenAllComponentsWindow}
 }=UseAppContext();
 
     const {menuItemsObject:{menuItems,setMenuItems},}=UseAppContext();
-    console.log("USECONTEXT::",UseAppContext())
+
      function handleLinkClick(item:MenuItem){
          setMenuItems((prevMenuItems)=>
           prevMenuItems.map((prevMenuItem)=>
@@ -117,6 +118,9 @@ function Links(){
         )
         if(item.name==="Projects"){
             setOpenAllProjectsWindow(true);    
+        }
+        if(item.name=="Favorites"){
+              setOpenAllComponentsWindow(true);
         }
      }
     

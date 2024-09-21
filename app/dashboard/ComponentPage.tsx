@@ -1,22 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { UseAppContext } from '../ContextApi'
 import TopBar from './components/ComponentPage/TopBar';
 import AllComponents from './components/ComponentPage/AllComponents';
 import { TextToIcon } from '../utils/textToIcon';
 import AddIcon from "@mui/icons-material/Add"
 export default function ComponentPage() {
-    const {showComponentPageObject:{setShowComponentPage},
+    const {showComponentPageObject:{showComponentPage,setShowComponentPage},
       selectedProjectObject:{selectedProject},
-      
+      isMobileViewObject:{isMobileView},
+      showSearchBarObject:{showSearchBar},  
   }=UseAppContext();
+  const [searchInput,setSearchInput]=useState<string>("");
+
 
   return (
 
     <div className='w-full bg-slate-50 p-3 px-4 pt-5 min-h-screen'>
-      {/* {showSearchBar && isMobileView && showComponentPage && <SoftLayer/>} */}
-      <TopBar/>
+      {showSearchBar && isMobileView && showComponentPage && <SoftLayer/>}
+      <TopBar searchInput={searchInput} setSearchInput={setSearchInput}/>
       {selectedProject?.components.length === 0 && <EmptyProjectsPlaceholder/>}
-      <AllComponents/>
+      <AllComponents searchInput={searchInput}/>
     </div>
   ) 
 }
@@ -49,5 +52,11 @@ export function EmptyProjectsPlaceholder(){
       </button>
       
     </div>
+  )
+}
+
+function SoftLayer(){
+  return(
+    <div className="w-full h-full fixed top-0 z-40 right-0 bg-black opacity-30"></div>
   )
 }

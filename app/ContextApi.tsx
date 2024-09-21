@@ -7,6 +7,7 @@ import { MdLightMode } from "react-icons/md";
 import { allProjectData } from "./allData";
 import { MdDarkMode } from "react-icons/md";
 import {Project,Component} from "./allData"
+import { useUser } from "@clerk/nextjs";
 
 export interface MenuItem{
      id:string;
@@ -27,7 +28,17 @@ export interface Position{
     left:number;
 
 }
+export interface Label{
+   label:string;
+   selected:boolean;
+   value:string;
 
+}
+export interface Category{
+    category:string;
+    options:Label[];
+
+}
 interface AppContexttype{
     menuItemsObject:{
         menuItems:MenuItem[];
@@ -114,7 +125,52 @@ interface AppContexttype{
         openAllProjectsWindow:boolean;
         setOpenAllProjectsWindow:React.Dispatch<React.SetStateAction<boolean>>;
     };
-  
+    openSortingDropDownObject:{
+        openSortingDropDown:boolean;
+        setOpenSortingDropDown:React.Dispatch<React.SetStateAction<boolean>>;
+    };
+  sortingDropDownPositionsObject:{
+    sortingDropDownPositions:Position;
+    setSortingDropDownPositions:React.Dispatch<React.SetStateAction<Position>>;
+  };
+sortedProjectsObject:{
+    sortedProjects:Project[];
+    setSortedProjects:React.Dispatch<React.SetStateAction<Project[]>>;
+};
+sortingOptionsObject:{
+    sortingOptions:Category[];
+    setSortingOptions:React.Dispatch<React.SetStateAction<Category[]>>;
+};
+openAllComponentsWindowObject:{
+    openAllComponentsWindow:boolean;
+    setOpenAllComponentsWindow:React.Dispatch<React.SetStateAction<boolean>>;
+};
+openFilterDropDownObject:{
+    openFilterDropDown:boolean;
+    setOpenFilterDropDown:React.Dispatch<React.SetStateAction<boolean>>;
+};
+filterDropDownPositionsObject:{
+    filterDropDownPositions:Position;
+    setFilterDropDownPositions:React.Dispatch<React.SetStateAction<Position>>;
+};
+selectedProjectToFilterObject:{
+    selectedProjectToFilter:string|null;
+    setSelectedProjectToFilter:React.Dispatch<React.SetStateAction<string|null>>;
+};
+openLiveSearchBarObject:{
+    openLiveSearchBar:boolean;
+    setOpenLiveSearchBar:React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+mainSearchQueryObject:{
+     mainSearchQuery:string;
+     setMainSearchQuery:React.Dispatch<React.SetStateAction<string>>;
+};
+
+liveSearchPositionsObject:{
+    liveSearchPositions:Position;
+    setLiveSearchPositions:React.Dispatch<React.SetStateAction<Position>>;
+};
 
    }
 
@@ -206,7 +262,53 @@ openComponentEditorObject:{
 openAllProjectsWindowObject:{
     openAllProjectsWindow:false,
     setOpenAllProjectsWindow:()=>{}
+},
+openSortingDropDownObject:{
+    openSortingDropDown:false,
+    setOpenSortingDropDown:()=>{}
+},
+sortingDropDownPositionsObject:{
+    sortingDropDownPositions:{left:0,top:0},
+    setSortingDropDownPositions:()=>{}
+},
+sortedProjectsObject:{
+    sortedProjects:[],
+    setSortedProjects:()=>{}
+},
+sortingOptionsObject:{
+    sortingOptions:[],
+    setSortingOptions:()=>{}
+},
+openAllComponentsWindowObject:{
+    openAllComponentsWindow:false,
+    setOpenAllComponentsWindow:()=>{}
+},
+openFilterDropDownObject:{
+    openFilterDropDown:false,
+    setOpenFilterDropDown:()=>{}
+},
+filterDropDownPositionsObject:{
+    filterDropDownPositions:{left:0,top:0},
+    setFilterDropDownPositions:()=>{}
+},
+selectedProjectToFilterObject:{
+    selectedProjectToFilter:null,
+    setSelectedProjectToFilter:()=>{}
+},
+openLiveSearchBarObject:{
+    openLiveSearchBar:false,
+     setOpenLiveSearchBar:()=>{},
+
+},
+mainSearchQueryObject:{
+    mainSearchQuery:"",
+    setMainSearchQuery:()=>{}
+},
+liveSearchPositionsObject:{
+    liveSearchPositions:{left:0,top:0},
+    setLiveSearchPositions:()=>{}
 }
+
 
 
 };
@@ -268,6 +370,50 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
      const [selectedComponent,setSelectedComponent]=useState<Component|null>(null);
      const [openComponentEditor,setOpenComponentEditor]=useState(false)
      const [openAllProjectsWindow,setOpenAllProjectsWindow]=useState(false)
+     const [openSortingDropDown,setOpenSortingDropDown]=useState(false)
+     const [sortingDropDownPositions,setSortingDropDownPositions]=useState({
+        left:0,
+        top:0,
+     })
+     const [openFilterDropDown,setOpenFilterDropDown]=useState(false);
+     const [filterDropDownPositions,setFilterDropDownPositions]=useState({
+        left:0,
+        top:0, 
+     })
+     const [selectedProjectToFilter,setSelectedProjectToFilter]=useState<string|null>(null);
+     const [openLiveSearchBar,setOpenLiveSearchBar]=useState(false);
+     const [mainSearchQuery,setMainSearchQuery]=useState("");
+     const [liveSearchPositions,setLiveSearchPositions]=useState({
+        left:0,
+        top:0,
+
+     })
+     const {user,isLoaded,isSignedIn}=useUser();
+     const [sortedProjects,setSortedProjects]=useState<Project[]>([]);
+     const [sortingOptions,setSortingOptions]=useState<Category[]>(()=>{
+        const savedState=localStorage.getItem("sortingOptions");
+        return savedState
+          ? JSON.parse(savedState)
+          :[
+            {
+                category:"Order",
+                options:[
+                    {label:"A-Z",value:"asc",selected:true},
+                    {label:"Z-A",value:"desc",selected:false},
+                ]
+            },
+            {
+                category:"Date",
+                options:[
+                    {label:"Newest",value:"newest",selected:false},
+                    {label:"Oldest",value:"oldest",selected:false}
+                ] 
+            }  
+        ]
+     });
+     const [openAllComponentsWindow,setOpenAllComponentsWindow]=useState(false);
+
+
     useEffect(()=>{
         function handleResize(){
             setIsMobileView(window.innerWidth <=640);
@@ -278,28 +424,41 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             window.removeEventListener("resize",handleResize)
         };
     },[]);
+
+
+
     useEffect(()=>{
-        function fetchAllProjects(){
-            setTimeout(()=>{
-                // sort all the components in the allProjects by createdAt
-                allProjectData.forEach((project)=>{
-                    project.components.sort((a,b)=>{
-                        return (
-                            new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime()
-                        )
-                    });
-                });
-                // update all projects
-                setAllProjects(allProjectData);
-                // set loading to false
-                
-                setIsLoading(false);
-            },2000);
+        async function fetchAllProjects(){
+             try {
+                 const response=await fetch(`/api/projects?clerkUserId=${user?.id}`);
+                 if(!response.ok){
+                     throw new Error("Failed to fetch projects")
+                 }
+                 const data:{projects:Project[]}=await response.json();
+                 if(data.projects){
+                     data.projects.forEach((project)=>{
+                         project.components.sort((a,b)=>{
+                             return (
+                                 new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime()
+                             )
+                         });
+                     })
+                     setAllProjects(data.projects);
+                     setSortedProjects(data.projects)
+                 }
+             } catch (error) {
+                 console.error(error);
+ 
+             }finally{
+                 setIsLoading(false);
+             }
+         }
+         if(isLoaded && isSignedIn){
+             fetchAllProjects();
+         }
+         
+     },[user,isLoaded,isSignedIn]);
 
-        }
-        fetchAllProjects();
-
-    },[])
     // update favorite components when allprojects changes
     useEffect(()=>{
         if(allProjects.length>0){
@@ -308,6 +467,9 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             )
             setAllFavoriteComponents(favoriteComponents)
         }
+        //update the sorted projects when all projects changes
+    
+        
     },[allProjects]);
     useEffect(()=> {
          
@@ -320,9 +482,15 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
 
     },[darkModeMenu]);
     useEffect(()=>{
+        if(menuItems[0].isSelected){
+            setSelectedProject(null);
+            setShowComponentPage(false);
+        }
         if(menuItems[1].isSelected){
             setOpenAllProjectsWindow(true);
-
+            setSelectedProject(null);
+            setShowComponentPage(false);
+      
         }
     },[menuItems]);
     
@@ -347,7 +515,22 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             openDeleteWindowObject:{openDeleteWindow,setOpenDeleteWindow},
             selectedComponentObject:{selectedComponent,setSelectedComponent},
             openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
-            openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow}
+            openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
+            openSortingDropDownObject:{openSortingDropDown,setOpenSortingDropDown},
+            sortingDropDownPositionsObject:{sortingDropDownPositions,setSortingDropDownPositions},
+            sortedProjectsObject:{sortedProjects,setSortedProjects},
+            sortingOptionsObject:{sortingOptions,setSortingOptions},
+            openAllComponentsWindowObject:{openAllComponentsWindow,setOpenAllComponentsWindow},
+            openFilterDropDownObject:{openFilterDropDown,setOpenFilterDropDown},
+            filterDropDownPositionsObject:{filterDropDownPositions,setFilterDropDownPositions},
+            selectedProjectToFilterObject:{selectedProjectToFilter,setSelectedProjectToFilter},
+            openLiveSearchBarObject:{openLiveSearchBar,setOpenLiveSearchBar},
+            liveSearchPositionsObject:{liveSearchPositions,setLiveSearchPositions},
+            mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+
+
+
+           
 
         } }>
          {children}
@@ -355,3 +538,6 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
     )
 }
 export const UseAppContext = () => useContext(AppContext)
+
+
+

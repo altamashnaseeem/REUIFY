@@ -9,19 +9,26 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
+import { TextToIcon } from "@/app/utils/textToIcon";
 export default function AddProjectWindow({
-    selectedIcon
+    selectedIcon,
+    setSelectedIcon,
 }:{
     selectedIcon:{
         icon:ReactNode;
         name:string;
 
-    }
+    };
+    setSelectedIcon:React.Dispatch<React.SetStateAction<{
+        icon:ReactNode;
+        name:string;
+    }>>
 }){
     const {isMobileViewObject:{isMobileView},
         openProjectWindowObject:{openProjectWindow,setOpenProjectWindow},
         openIconWindowObject:{openIconWindow,setOpenIconWindow},
         allProjectsObject:{allProjects,setAllProjects},
+        selectedProjectObject:{selectedProject,setSelectedProject}
 
 }=UseAppContext()
 const [errorMessage,setErrorMessage]=useState<string>("");
@@ -30,10 +37,48 @@ const {user} =useUser();
 
 const inputRef=useRef<HTMLInputElement>(null);
 useEffect(()=>{
-    inputRef.current?.focus()
+    // if the selectedProject is not null ,it means we are going to create a new project
+    if(!selectedProject){
+        //reset the project name
+        setProjectName("");
+        //set the default icon 
+        const iconObject={
+            icon:TextToIcon({text:"CodeIcon",
+                className:"text-white"
+            }),
+            name:"CodeIcon",
+
+        };
+        //update the selectedIcon
+        setSelectedIcon(iconObject);
+
+    }else{
+        // update the input name when we want to edit the project
+        setProjectName(selectedProject.name);
+        const iconObject={
+            icon:TextToIcon({
+                text:selectedProject.icon,
+                className:"text-white",
+            }),
+            name:selectedProject.icon,
+        };
+        setSelectedIcon(iconObject);
+
+    }
+    const focusInput=()=>{
+        if(inputRef.current){
+            inputRef.current.focus();
+
+        }
+    };
+    //Schedule focus setting for the next render
+    setTimeout(focusInput,0);
     setErrorMessage("");
-    
-},[openProjectWindow])
+
+
+},[openProjectWindow]);
+
+
  function handleInputUpdate(e:React.ChangeEvent<HTMLInputElement>){
 
       // empty the error message
@@ -43,7 +88,7 @@ useEffect(()=>{
 
       
  };
- function addNewProject(){
+ async function addNewProject(){
     // check if the project name is not empty
     
     if(projectName.trim()===""){
@@ -53,7 +98,7 @@ useEffect(()=>{
     }
 
     if(allProjects.find((project)=>
-    project.name.toLocaleLowerCase()===projectName.toLocaleLowerCase()
+    project.name.toLowerCase()===projectName.toLowerCase()
     )){
         setErrorMessage("Project name already exists");
         inputRef.current?.focus();
@@ -62,29 +107,90 @@ useEffect(()=>{
     }
     //adding new project to allProjects state
     //creating a new project object
-    const newProject:Project={
-        _id:uuidv4(),
+    const newProject={
         clerkUserId:user?.id as string,
         name:projectName,
         icon:selectedIcon.name,
-        createdAt:new Date().toISOString(),
-        components:[]
-
-
+        components:[],
     };
     
     //adding new project to allprojects
     try{
-        setAllProjects([...allProjects,newProject]);
-        toast.success("Project added successfully");
-        setOpenProjectWindow(false);
-        console.log("all project",newProject)
+   const response=await fetch("/api/projects",{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify(newProject)
+   });
+   if(!response.ok){
+    throw new Error("Failed to add project")
+   }
+  const addedProject=await response.json();
+  // adding new project to allProjects
+  setAllProjects([...allProjects,addedProject.project]);
+  toast.success("Project added successfully")
+  setOpenProjectWindow(false);
 
     }catch(error){
-        toast.error("Failed to add project");
-
+        console.error("Error adding project:",error);
+        toast.error("Failed to add project")
+        
     }
 
+ }
+ async function editTheProject(){
+  // Check if the project name is not empty
+  if(projectName.trim()===""){
+    setErrorMessage("Project name cannot be empty");
+    inputRef.current?.focus();
+    return ;
+
+  }
+  if(!selectedProject){
+    toast.error("No project selected for editing");
+    return ;
+  }
+  try{
+  const response=await fetch(`/api/projects?projectId=${selectedProject._id}`,
+
+    {
+        method:"PUT",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        body:JSON.stringify({
+            name:projectName,
+            icon:selectedIcon.name,
+            clerkUserId:selectedProject.clerkUserId,
+
+        }),
+
+    }
+  );
+  if(!response.ok){
+    const errorData=await response.json();
+    throw new Error(errorData.message || "Failed ton update project");
+
+  }
+  const updatedProject=await response.json();
+  const updateAllProjects=allProjects.map((singleProject)=>{
+    return singleProject._id === selectedProject._id
+    ? updatedProject.project
+    : singleProject;
+  })
+  setAllProjects(updateAllProjects);
+  setOpenProjectWindow(false);
+  setSelectedProject(null);
+  toast.success("Project has been updated successfully");
+
+  }catch(error){
+    console.error("Error updating project:",error);
+      
+    toast.error(
+        error instanceof Error ? error.message:"Something went wrong!"
+    )
+  }
  }
     return (
        <div className={`${isMobileView ? "w-[80%]":"w-[40%]"} h-[288px] border border-slate-50 bg-white rounded-md shadow-md ${openProjectWindow?"absolute":"hidden"} left-1/2 top-24 -translate-x-1/2 z-50`}>
@@ -97,10 +203,18 @@ useEffect(()=>{
                     />
 
                 </div>
-                <span className="font-semibold text-lg">New Project</span>
+                <span className="font-semibold text-lg">
+                    {!selectedProject?"New Project":"Edit Project"}
+                </span>
             </div>
             <CloseIcon 
-             onClick={()=>setOpenProjectWindow(false)}
+             onClick={()=>{
+                setOpenProjectWindow(false);
+                setSelectedProject(null);
+             }
+                
+                
+             }
              sx={{fontSize:16}}
              className="text-slate-400 text-[18px] cursor-pointer"
             />
@@ -134,13 +248,16 @@ useEffect(()=>{
         </div>
           {/* footer */}
           <div className="w-full mt-11 mb-10 flex gap-3 justify-end px-7 items-center">
-            <button onClick={()=>setOpenProjectWindow(false)} className="border border-slate-200 text-slate-400 text-[12px] p-2 px-6 rounded-md hover:border-slate-300 transition-all hover:bg-slate-50">
+            <button onClick={()=>{
+                setOpenProjectWindow(false);
+                setSelectedProject(null)
+            }} className="border border-slate-200 text-slate-400 text-[12px] p-2 px-6 rounded-md hover:border-slate-300 transition-all hover:bg-slate-50">
                    Cancel
             </button>
            <button  
-           onClick={addNewProject}
+           onClick={selectedProject?editTheProject:addNewProject}
            className="bg-sky-500 hover:bg-sky-600 text-white text-[12px] p-2 px-3 rounded-md transition-all ">
-               Add a Project
+               {!selectedProject?"Add Project":"Editing Project"}
            </button>
           </div>
        </div>

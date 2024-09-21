@@ -3,7 +3,7 @@ import { MdVisibility } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { UseAppContext } from '@/app/ContextApi';
-import { Component } from '@/app/allData';
+import { Component, Project } from '@/app/allData';
 import { CircularProgress } from '@mui/material';
 import AllProjects from './AllProjects';
 function FavoriteComponent() {
@@ -81,25 +81,20 @@ function SingleFavoriteComponent({component}:{component:Component}){
     window.scrollTo({top:0,behavior:"smooth"})
 
   }
-  function DeleteFavoriteComponent(){
-    const project=allProjects.find((project)=> 
-      project.name.toLowerCase()===component.projectName.toLowerCase());
-    if(project){
-      setSelectedProject(project);
-
-    }else{ 
-      console.error(`Project not found for component: ${component.name}`);
-
-    }
-   setSelectedComponent(component);
-   setOpenDeleteWindow(true);
-
-
-  }
+ 
+ 
     return (
         <div className='grid grid-cols-4 gap-4 text-sm items-center rounded-lg p-2 max-sm:grid-cols-2'>
             <span 
-            onClick={favoriteComponentOpen}
+             onClick={()=>
+              openComponent({
+                component,
+                allProjects,
+                setSelectedComponent,
+                setOpenComponentEditor,
+                setSelectedProject
+              })
+             }
             className='hover:text-sky-500 cursor-pointer'>{component.name}</span>
             <span className='max-sm:hidden'>{component.createdAt}</span>
             
@@ -110,12 +105,29 @@ function SingleFavoriteComponent({component}:{component:Component}){
             </span>
             <div className='flex gap-2'>
              <div 
-             onClick={favoriteComponentOpen}
+             onClick={()=>
+              openComponent({
+                component,
+                allProjects,
+                setSelectedComponent,
+                setOpenComponentEditor,
+                setSelectedProject
+              })
+             }
              className='bg-sky-500 rounded-full w-7 h-7 flex items-center justify-center hover:bg-sky-600 cursor-pointer'>
              <FaEdit fontSize="medium" className='text-white text-[13px]' />
              </div>
              <div 
-             onClick={DeleteFavoriteComponent}
+             onClick={
+              ()=>
+                openTheDeleteWindow({
+                  component,
+                  setOpenDeleteWindow,
+                  allProjects,
+                  setSelectedComponent,
+                  setSelectedProject
+                })
+             }
              className='bg-sky-500 rounded-full w-7 h-7 flex items-center justify-center hover:bg-sky-600 cursor-pointer'>
              <MdDelete fontSize="medium" className='text-white text-[13px]' />
              </div>
@@ -125,3 +137,60 @@ function SingleFavoriteComponent({component}:{component:Component}){
 }
 
 export default FavoriteComponent
+
+export function openTheDeleteWindow({
+  component,
+  allProjects,
+  setSelectedComponent,
+  setSelectedProject,
+  setOpenDeleteWindow,
+}:{
+  component:Component;
+  allProjects:Project[];
+  setSelectedComponent:(component:Component)=>void;
+  setSelectedProject:(project:Project)=>void;
+  setOpenDeleteWindow:(open:boolean)=>void;
+}){
+  // Get the project and set it in the selectedProject state
+  const project=allProjects.find((project)=>
+  project.name.toLowerCase()===component.projectName.toLowerCase()
+
+  );
+  if(project){
+    setSelectedProject(project);
+  }else{
+    console.error(`Project not found for component: ${component.name}`);
+
+  }
+  setSelectedComponent(component);
+  setOpenDeleteWindow(true)
+}
+
+export function openComponent({
+  component,
+  allProjects,
+  setSelectedComponent,
+  setOpenComponentEditor,
+  setSelectedProject
+}:{
+  component:Component;
+  allProjects:Project[];
+  setSelectedComponent:React.Dispatch<React.SetStateAction<Component|null>>;
+  setOpenComponentEditor:React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedProject:React.Dispatch<React.SetStateAction<Project|null>>;
+}){
+   // scroll to the top of the page or to the component editor
+   window.scrollTo({top:0,behavior:"smooth"});
+   setSelectedComponent(component);
+   setOpenComponentEditor(true);
+
+   //Get the project and set it in the selectedProject state
+   const project=allProjects.find((project)=>
+  project.name.toLowerCase()===component.projectName.toLowerCase()
+  );
+  if(project){
+    setSelectedProject(project)
+  }else{
+    console.error(`Project not found for component: ${component.name}`);
+  }
+}

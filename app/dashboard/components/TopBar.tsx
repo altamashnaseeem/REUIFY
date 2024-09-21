@@ -40,18 +40,26 @@ function DashboardText(){
 }
 
 function SearchBar(){
-      const {showSearchBarObject:{showSearchBar,setShowSearchBar}}=UseAppContext();
+    const {showSearchBarObject:{showSearchBar,setShowSearchBar},
+   openLiveSearchBarObject:{openLiveSearchBar,setOpenLiveSearchBar},
+   liveSearchPositionsObject:{setLiveSearchPositions}
+}=UseAppContext()
       const searchBarRef=useRef<HTMLDivElement>(null);
       function handleClickedSearchBar(){
+        if(searchBarRef.current){
+            const rect=searchBarRef.current.getBoundingClientRect();
+            const top=rect.top;
+            const left=rect.left;
+            setLiveSearchPositions({top,left})
+        }
         if(!showSearchBar){
-            setShowSearchBar(true);
-
+            setShowSearchBar(true)
         }
 
       }
       useEffect(()=>{
         function handleClickOutside(event:MouseEvent){
-            if(searchBarRef.current && !searchBarRef.current.contains(event.target as Node)){
+            if(searchBarRef.current && !searchBarRef.current.contains(event.target as Node) && openLiveSearchBar){
                 setShowSearchBar(false);
 
             }
@@ -85,7 +93,9 @@ function SearchIconAndText(){
 }
 
 function InputSearchBar(){
-    const {showSearchBarObject:{setShowSearchBar}}=UseAppContext();
+    const {showSearchBarObject:{setShowSearchBar},
+mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+}=UseAppContext();
     const inputRef=useRef<HTMLInputElement>(null);
     useEffect(()=>{
        inputRef.current?.focus();
@@ -101,6 +111,8 @@ function InputSearchBar(){
         <div className="px-2 flex justify-between items-center w-full">
             <input
             ref={inputRef}
+            value={mainSearchQuery}
+            onChange={(e)=>setMainSearchQuery(e.target.value)}
             placeholder="Search a component..."
             className="w-full bg-slate-100 outline-none text-[13px] placeholder:text-slate-400"
             />

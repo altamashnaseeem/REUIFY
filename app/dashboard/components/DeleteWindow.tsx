@@ -8,46 +8,90 @@ function DeleteWindow() {
     const {openDeleteWindowObject:{openDeleteWindow,setOpenDeleteWindow},
           selectedProjectObject:{selectedProject,setSelectedProject},
           selectedComponentObject:{selectedComponent},
-          allProjectsObject:{allProjects,setAllProjects}
+          allProjectsObject:{allProjects,setAllProjects},
+          openAllProjectsWindowObject:{openAllProjectsWindow}
 }=UseAppContext();
-function deleteComponentFunction(){
-  // delete all component from selectedProject
-  
+async function deleteProjectFunction(){
+  if(!selectedProject?._id){
+    toast.error("No project selected for deletion");
+    return;
+  }
 
-  try{
-    if(selectedProject){
-      const updatedSelectedProject={
-        ...selectedProject,
-        components:selectedProject.components.filter(
-          (component:Component)=>component._id!== selectedComponent?._id
-        )
+  try {
+    const response=await fetch(
+      `/api/projects?projectId=${selectedProject._id}`,
+      {
+        method:"DELETE",
       }
-      
-      setSelectedProject(updatedSelectedProject);
-
+    );
+    if(!response.ok){
+      const errorData=await response.json();
+      throw new Error(errorData.message || "Failed to delete project")
     }
-    // Delete COmponent from allProjects
-    const updatedAllProjects=allProjects.map((project:Project)=>{
-      if(project._id === selectedProject?._id){
+    const updatedAllProjects=allProjects.filter(
+      (project:Project)=>project._id!==selectedProject._id
+    );
+    setAllProjects(updatedAllProjects);
+    setOpenDeleteWindow(false);
+    toast.success("Project deleted successfully");
+  } catch (error) {
+    console.error("Error deleting project:",error);
+    toast.error(
+      error instanceof Error ? error.message:"Something went wrong"
+    );
+
+  }
+}
+async function deleteComponentFunction(){
+  // delete all component from selectedProject
+  try {
+    if(selectedProject && selectedComponent){
+      const response=await fetch(
+        `/api/projects?projectId=${selectedProject._id}&componentId=${selectedComponent._id}`,
+        {
+          method:"PUT",
+          headers:{
+            "Content-Type":"application/json",
+
+          },
+          body:JSON.stringify({
+            action:"deleteComponent"
+          }),
+
+        }
+      );
+      if(!response.ok){
+        throw new Error("Failed to delete component");
+      }
+      const updatedProject=await response.json();
+      //update the state with updated project
+      setSelectedProject(updatedProject.project);
+      //delete component from allprojects
+        const updatedAllProjects=allProjects.map((project:Project)=>{
+      if(project._id === selectedProject._id){
         return {
           ...project,
           components:project.components.filter(
-            (component:Component)=> component._id!== selectedComponent?._id
-          )
-        }
+            (component:Component)=> component._id!== selectedComponent._id
+          ),
+        };
       }
       return project;
 
     });
-    
     setAllProjects(updatedAllProjects);
     
-    setOpenDeleteWindow(false);
-    toast.success("Component deleted successfully");
-  }catch(error){
-    toast.error("Something went wrong");
-
+       setOpenDeleteWindow(false);
+       toast.success("Component deleted successfully");
+    }
+  } catch (error) {
+    console.error("Error deleting component:",error);
+    toast.error(
+      error instanceof Error ? error.message:"Something went wrong"
+    );
   }
+
+
 }
 
   return (
@@ -69,9 +113,16 @@ function deleteComponentFunction(){
       {/* Message */}
       <div className='flex flex-col mt-7'>
         {/* main message */}
-        <span className='font-bold'>permanently delete this component?</span>
+        <span className='font-bold'>
+          Permanently delete this{" "}
+          {openAllProjectsWindow ? "project":"component"}?
+          
+          </span>
         {/* second  message */}
-        <span className='text-slate-400 text-[13px] mt-2'>Are you sure you want to permanently delete this component?</span>
+        <span className='text-slate-400 text-[13px] mt-2'>Are you sure you want to permanently delete this{" "}
+
+          {openAllProjectsWindow?"project":"component"}?
+        </span>
 
       </div>
       {/* Button */}
@@ -83,11 +134,12 @@ function deleteComponentFunction(){
             Cancel
         </button>
         <button
-        onClick={deleteComponentFunction}
+        onClick={openAllProjectsWindow?deleteProjectFunction:deleteComponentFunction}
 
         className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600'
         >
-            Delete Component
+            Delete{" "}
+            {openAllProjectsWindow?"project":"component"}
 
         </button>
       </div>

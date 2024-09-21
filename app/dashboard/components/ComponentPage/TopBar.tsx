@@ -1,22 +1,45 @@
 import { UseAppContext } from '@/app/ContextApi'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import SearchIcon from "@mui/icons-material/Search"
 import { AddOutlined } from '@mui/icons-material';
 import CloseIcon from "@mui/icons-material/Close"
 import MenuIcon from "@mui/icons-material/Menu"
-function TopBar() {
-    const {showComponentPageObject:{setShowComponentPage},
+function TopBar({searchInput,setSearchInput}:{
+  searchInput:string;
+  setSearchInput:React.Dispatch<React.SetStateAction<string>>;
+
+}) {
+    const {showComponentPageObject:{showComponentPage,setShowComponentPage},
  showSideBarObject:{setShowSideBar,},
  selectedProjectObject:{selectedProject,setSelectedProject},
- openComponentEditorObject:{openComponentEditor,setOpenComponentEditor}
+ openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
+ mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery},
+ 
 }=UseAppContext();
-  
+const inputRef=useRef<HTMLInputElement>(null) ;
+useEffect(()=>{
+  if(inputRef.current){
+    inputRef.current.focus();
+  }
+},[showComponentPage]) ;
+useEffect(()=>{
+  if(showComponentPage && mainSearchQuery !== ""){
+    setSearchInput(mainSearchQuery);
+
+  }
+},[showComponentPage]);
+
+
   return (
     <div className='flex justify-between items-center gap-4 bg-white p-3 px-4 rounded-lg'>
        <div className='flex gap-5 items-center '>
         <div 
-        onClick={()=>setShowComponentPage(false)}
+        onClick={()=>{
+          setShowComponentPage(false);
+          setMainSearchQuery("");
+          setSelectedProject(null);
+        }}
         className='border mt-[2px] p-[2px] text-slate-400 flex h-7 gap-1 px-2 items-center justify-center rounded-md cursor-pointer'
         >
        <ArrowBackIcon sx={{fontSize:11}} className="text-[11px]"/>
@@ -36,6 +59,9 @@ function TopBar() {
         className="text-slate-400 text-[19px]"
         />
         <input
+        value={searchInput}
+        ref={inputRef}
+        onChange={(e)=>setSearchInput(e.target.value)}
         placeholder='Search a component...'
         className='bg-slate-100 outline-none font-light text-[12px] w-full'
         />

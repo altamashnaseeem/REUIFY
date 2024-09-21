@@ -44,7 +44,7 @@ function AllProjects() {
             <EmptyProjectPlaceHolder/>
         ):(
           <div className='flex flex-wrap gap-4 mt-7 mb-2 max-sm:grid-cols-1'>
-              {allProjects.map((project,index)=>(
+              {allProjects?.slice(0,10).map((project,index)=>(
                 <div key={index}
                 
                 >

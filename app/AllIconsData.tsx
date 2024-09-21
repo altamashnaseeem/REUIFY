@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -13,6 +13,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import MenuIcon from '@mui/icons-material/Menu';
 import CodeIcon from '@mui/icons-material/Code';
+import { UseAppContext } from "./ContextApi";
 
 export interface IconData{
     id:number;
@@ -75,6 +76,7 @@ export default function AllIcons({
 }:{allIconsState:IconData[];
     setAllIconsState:React.Dispatch<React.SetStateAction<IconData[]>>
 }){
+    const {selectedProjectObject:{selectedProject},openIconWindowObject:{openIconWindow}}=UseAppContext();
     function handleClickedIcon(singleIcon:IconData){
         setAllIconsState((prevState)=>
         prevState.map((icon) => ({
@@ -83,6 +85,18 @@ export default function AllIcons({
         }))
         )
     }
+    useEffect(()=>{
+        if(selectedProject){
+        setAllIconsState((prevState)=>
+        prevState.map((icon)=>({
+            ...icon,
+            isSelected:icon.name===selectedProject?.icon,
+
+        }))
+        )
+        }
+    },[openIconWindow]);
+    
     return (
       <div className="flex flex-wrap gap-2 text-sky-500 p-3">
         {allIconsState.map((singleIcon,index)=>(

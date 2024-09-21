@@ -123,36 +123,95 @@ if(!selectedComponent){
 
 
 }
-function addNewComponent(newComponent:Component){
-  if(selectedProject && allProjects){
-    const updatedProject={
-      ...selectedProject,
-      components:[...selectedProject.components,newComponent]
-    };
-    const updatedAllProjects=allProjects.map((project)=>
-    project._id===selectedProject._id?updatedProject:project
-    );
-    setSelectedProject(updatedProject);
-    setAllProjects(updatedAllProjects);
+async function addNewComponent(newComponent:Component){
 
-
+  if(!selectedProject){
+    toast.error("No project selected");
+    return;
   }
-}
-function updateExistingComponent(updatedComponent:Component){
-  if(selectedProject && allProjects){
-    const updatedComponents=selectedProject.components.map((component)=>
-    component._id === updatedComponent._id ? updatedComponent:component
+  try {
+    const response=await fetch(
+      `/api/projects?projectId=${selectedProject._id}`,
+      {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          action:"addComponent",
+          component:newComponent,
+        }),
+      }
     );
-    const updatedProject={
-      ...selectedProject,
-      components:updatedComponents,
-
-    };
-    const updatedAllProjects=allProjects.map((project)=>
-    project._id === selectedProject._id ? updatedProject:project
+    if(!response.ok){
+      throw new Error("Failed to add component")
+    }
+    const updatedProject=await response.json();
+      const updatedAllProjects=allProjects.map((project)=>
+    project._id===selectedProject._id?updatedProject.project:project
     );
-    setSelectedProject(updatedProject);
+    setSelectedProject(updatedProject.project);
     setAllProjects(updatedAllProjects);
+    toast.success("Component added successfully");
+
+  } catch (error) {
+    console.error("Error adding component:",error);
+    toast.error("Failed to add component");
+  }
+
+}
+async function updateExistingComponent(updatedComponent:Component){
+  // if(selectedProject && allProjects){
+  //   const updatedComponents=selectedProject.components.map((component)=>
+  //   component._id === updatedComponent._id ? updatedComponent:component
+  //   );
+  //   const updatedProject={
+  //     ...selectedProject,
+  //     components:updatedComponents,
+
+  //   };
+  //   const updatedAllProjects=allProjects.map((project)=>
+  //   project._id === selectedProject._id ? updatedProject:project
+  //   );
+  //   setSelectedProject(updatedProject);
+  //   setAllProjects(updatedAllProjects);
+  // }
+  if(!selectedProject){
+    toast.error("No project selected");
+    return ;
+  }
+
+  try {
+    const response=await fetch(
+      `/api/projects?projectId=${selectedProject._id}&componentId=${updatedComponent._id}`,
+      {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body:JSON.stringify({
+          action:"updateComponent",
+          component:updatedComponent,
+
+        }),
+
+      }
+    );
+    if(!response.ok){
+      throw new Error("Failed to update component");
+
+    }
+    const updatedProject=await response.json();
+      const updatedAllProjects=allProjects.map((project)=>
+    project._id === selectedProject._id ? updatedProject.project:project
+    );
+    setSelectedProject(updatedProject.project)
+    setAllProjects(updatedAllProjects);
+    toast.success("Component updated successfully");
+  } catch (error) {
+    console.error("Error updating component:",error);
+    toast.error("Failed to update component");
+
   }
 }
 function copyTheCode(){

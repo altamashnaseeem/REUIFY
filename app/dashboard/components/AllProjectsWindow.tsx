@@ -1,5 +1,5 @@
 import { UseAppContext } from '@/app/ContextApi'
-import { AddOutlined, Category, Close, Delete, DragIndicatorRounded, EditRounded, KeyboardArrowDownRounded, Search, SearchRounded } from '@mui/icons-material';
+import { AddOutlined, Category, Close, Delete, DragIndicatorRounded, EditRounded, FavoriteBorder, KeyboardArrowDownRounded, KeyboardArrowUpRounded, Search, SearchRounded } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import { EmptyProjectPlaceHolder } from './AllProjects';
@@ -25,7 +25,8 @@ function AllProjectsWindow() {
 }
 function Header(){
     const {menuItemsObject:{menuItems,setMenuItems},
-    openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow}
+    openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
+    mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
 }=UseAppContext();
 
   function closeTheWindow(){
@@ -37,7 +38,9 @@ function Header(){
 
     }))
     );
-    setOpenAllProjectsWindow(false)
+    setMainSearchQuery("");
+    setOpenAllProjectsWindow(false);
+
   }
     return(
         <div className='flex justify-between items-center'>
@@ -60,7 +63,9 @@ function SearchBar({searchQuery,setSearchQuery}:{
 
 }){
 const {openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
-  openProjectWindowObject:{openProjectWindow,setOpenProjectWindow}
+  openProjectWindowObject:{openProjectWindow,setOpenProjectWindow},
+  mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+  
 }=UseAppContext();
 const inputRef=useRef<HTMLInputElement>(null);
 useEffect(()=>{
@@ -78,22 +83,42 @@ useEffect(()=>{
 
           }
     }
+    if(mainSearchQuery.trim().length > 0){
+        setSearchQuery(mainSearchQuery)
+    }
 },[openAllProjectsWindow,openProjectWindow]);
 const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
     setSearchQuery(event.target.value);
 
 }
+
+
     return (
         <div className='flex gap-5 items-center justify-between mt-12 relative'>
-            <div className={`h-[42px] bg-slate-50 flex items-center text-sm rounded-md pl-3 gap-1 w-[85%]`}>
+            <div className={`relative h-[42px] bg-slate-50 flex items-center text-sm rounded-md pl-3 gap-1 w-[85%]`}>
                 <SearchRounded className='text-slate-400'/>
                 <input 
                 ref={inputRef}
                 value={searchQuery}
                 onChange={handleChange}
                 placeholder='Search a Project...' className='bg-transparent outline-none w-full font-light'/>
+                {/* Close icon */}
+                
+                {searchQuery.length>0 && (
+                    <div
+                    onClick={()=>setSearchQuery("")}
+                    className='text-slate-400 cursor-pointer absolute right-2 top-3'
+                    >
+                        <Close sx={{fontSize:17}}/>
+                    </div>
+                )}
+                
+                
             </div>
-            <button className='bg-sky-500 ml-2 p-[10px] flex w-[15%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
+
+            <button 
+            onClick={()=>setOpenProjectWindow(true)}
+            className='bg-sky-500 ml-2 p-[10px] flex w-[15%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
                 <AddOutlined sx={{fontSize:17}}
                 
                 />
@@ -103,8 +128,25 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
     )
 }
 function SortByComponent(){
-    const {allProjectsObject:{allProjects}}=UseAppContext();
+    const {allProjectsObject:{allProjects},openSortingDropDownObject:{openSortingDropDown,setOpenSortingDropDown},sortingDropDownPositionsObject:{setSortingDropDownPositions},
+sortingOptionsObject:{sortingOptions}
+}=UseAppContext();
+   const nameRef=useRef<HTMLDivElement>(null);
 
+    function openSortingDropDownFunction(){
+     if(nameRef.current){
+        const rect=nameRef?.current.getBoundingClientRect();
+        const top=rect.top;
+        const left=rect.left;
+        setSortingDropDownPositions({top:top,left:left});
+
+     }
+    setOpenSortingDropDown(true);
+
+   }
+   const selectedName=sortingOptions.find((category)=>
+     category.options.some((option)=>option.selected)
+)
    return (
     <div className='mt-11 mb-[13px] flex gap-2 items-center justify-between text-[13px]'>
         <div className='flex gap-1'>
@@ -112,11 +154,16 @@ function SortByComponent(){
             <span className='text-sky-500 font-semibold'>{allProjects.length}</span>
             <span className='text-slate-400'>projects</span>
         </div>
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-2 items-center select-none'>
             <span className='text-slate-400'>Sort By:</span>
-            <div className='text-sky-500 flex gap-1 items-center'>
-                <span>Name</span>
-                <KeyboardArrowDownRounded className='text-[13px]'/>
+            <div ref={nameRef} onClick={openSortingDropDownFunction} className='text-sky-500 flex gap-1 items-center'>
+                <span>{selectedName?.category}</span>
+                {openSortingDropDown?(
+                  <KeyboardArrowUpRounded className='text-[13px] cursor-pointer'/>  
+                ):(
+                    <KeyboardArrowDownRounded className='text-[13px] cursor-pointer'/>
+
+                )}
             </div>
         </div>
     </div>
@@ -124,13 +171,14 @@ function SortByComponent(){
 }
 function ProjectsList({searchQuery}:{searchQuery:string}){
     const {allProjectsObject:{allProjects},
-        isLoadingObject:{isLoading}
+        isLoadingObject:{isLoading},
+        sortedProjectsObject:{sortedProjects}
 }=UseAppContext();
-const filterAllProjectsBySearchQuery=allProjects.filter((singleProject)=>
+const filterAllProjectsBySearchQuery=sortedProjects.filter((singleProject)=>
 singleProject.name.toLowerCase().includes(searchQuery.toLowerCase())
 )
     return (
-     <div className='w-full bg-slate-50 h-[64%] rounded-lg p-3 flex flex-col gap-3'>
+     <div className='w-full bg-slate-50 h-[57%] rounded-lg p-5 flex flex-col gap-3 overflow-auto'>
         {isLoading && (
             <div className='flex flex-col gap-3 justify-center items-center items-center w-full mt-28'>
                 <CircularProgress value={100}/>
@@ -168,6 +216,32 @@ function NoFoundProjectSearched(){
 }
 
 function SingleProject({project}:{project:Project}){
+    const {openProjectWindowObject:{setOpenProjectWindow},
+selectedProjectObject:{selectedProject,setSelectedProject},
+openAllProjectsWindowObject:{setOpenAllProjectsWindow},
+showComponentPageObject:{setShowComponentPage},
+openDeleteWindowObject:{setOpenDeleteWindow}
+}=UseAppContext()
+    function editTheProjectClicked(){
+        setOpenProjectWindow(true);
+        setSelectedProject(project);
+    }
+
+    function openTheProject(){
+        //update selected project
+      setSelectedProject(project);
+      // close the all project window
+      setOpenAllProjectsWindow(false);
+      //show the component page
+      setShowComponentPage(true);
+
+
+    }
+    function openDeleteWindow(){
+        setSelectedProject(project);
+        setOpenDeleteWindow(true);
+        
+    }
     return (
         <div className='w-full bg-white rounded-md flex gap-3 items-center justify-between p-3'>
             <div className='flex gap-3 items-center'>
@@ -187,15 +261,19 @@ function SingleProject({project}:{project:Project}){
                 {/* project name */}
                 <div className='flex flex-col '>
                     <span className='font-bold'>{project.name}</span>
-                    <span className='text-slate-400 text-[12px]'>{project.components.length}</span>
+                    <span onClick={openTheProject} className='text-slate-400 text-[12px] hover:text-sky-500'>{project.components.length}</span>
                 </div>
             </div>
             {/* Action Buttons */}
           <div className='flex gap-2 items-center'>
-            <div className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
+            <div 
+            onClick={editTheProjectClicked}
+            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
                 <EditRounded className='text-slate-400' sx={{fontSize:15}}/>
             </div>
-            <div className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
+            <div 
+            onClick={openDeleteWindow}
+            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
                 <Delete className='text-slate-400' sx={{fontSize:15}}/>
             </div>
           </div>

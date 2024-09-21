@@ -13,18 +13,28 @@ import { UseAppContext } from '@/app/ContextApi';
 import { Component, Project } from '@/app/allData';
 import Checkbox from '@mui/material/Checkbox';
 import { ContactSupportOutlined } from '@mui/icons-material';
-function AllComponents() {
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
+import DoneAllIcon from "@mui/icons-material/DoneAll"
+import toast from 'react-hot-toast';
+
+function AllComponents({searchInput}:{searchInput:string}) {
     const {selectedProjectObject:{selectedProject},
      
 
 }=UseAppContext();
-  
+const filteredComponents=selectedProject?.components.filter(
+    (component:Component)=>
+      searchInput
+        ? component.name.toLowerCase().includes(searchInput.toLowerCase())
+        :true
+);
+
 
 
   return (
     <div className='mt-10 flex flex-col gap-3'>
           
-          {selectedProject?.components.map(
+          {filteredComponents?.map(
           (component:Component,index:number)=>(
             <div key={index}>
                 <SingleComponent component={component}/>
@@ -55,7 +65,8 @@ function SingleComponent({component}:{component:Component}){
      openDropDownObject:{setOpenDropDown},
      dropDownPositionObject:{setDropDownPosition},
      selectedComponentObject:{setSelectedComponent},
-     openComponentEditorObject:{openComponentEditor,setOpenComponentEditor}
+     openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
+     
 }=UseAppContext();
    const iconRef=useRef<HTMLDivElement>(null);
     function changeTabState(index:number){
@@ -67,7 +78,8 @@ function SingleComponent({component}:{component:Component}){
             })
         })
     }
-    const [isFavorite,setIsFavorite]=useState(component.isFavorite);
+    const [copySuccess,setCopySuccess]=useState(false);
+    
     function updateFavoriteState(){
         
         const newAllProjects=allProjects.map((project:Project)=>{
@@ -134,6 +146,16 @@ function SingleComponent({component}:{component:Component}){
 
  }   
 
+function copyTheCode(code:string){
+    //Copy the code to clipboard
+    setCopySuccess(true);
+    toast.success("Code has been copied to clipboard");
+    setTimeout(()=>{
+        navigator.clipboard.writeText(code);
+        setCopySuccess(false)
+    },1400);
+
+}
     return (
         <div className='bg-white w-full rounded-lg p-8 pt-8 pb-10 mb-3'>
             {/* Component Title */}
@@ -183,17 +205,26 @@ function SingleComponent({component}:{component:Component}){
                     <LiveError className="rounded-lg border-gray-200 p-4 text-red-600"/>
                      <LivePreview className="rounded-lg border-gray-200 p-4"></LivePreview>
                  </div>
-                </LiveProvider>
+                </LiveProvider> 
             </div>
          ):(
-            <div className='border rounded-md mt-6 w-full'>
-           <SyntaxHighlighter
+            <div className='border rounded-md mt-6 w-full relative'>
+                <div className='absolute top-4 right-4 z-50 rounded-full bg-slate-200'>
+                <IconButton onClick={()=>copyTheCode(component.code)}/>
+                    {!copySuccess ?(
+                        <ContentCopyIcon sx={{fontSize:16}}/>
+                    ):(
+                        <DoneAllIcon sx={{fontSize:16}}/>
+                    )}
+                    <IconButton/>
+              </div>
+              <SyntaxHighlighter
            language={"javascript"}
            style={atelierSulphurpoolLight}
            wrapLines={true}
            wrapLongLines={true}
            >
-            {component.code}
+            {truncateString(component.code,600)}
            </SyntaxHighlighter>
             </div>
          )}
@@ -202,3 +233,9 @@ function SingleComponent({component}:{component:Component}){
 }
 
 export default AllComponents
+function truncateString(str:string,num:number){
+if(str.length <=num){
+    return str;
+}
+return str.slice(0,num) + "..."
+}
