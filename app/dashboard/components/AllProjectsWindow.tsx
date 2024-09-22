@@ -208,7 +208,7 @@ function NoFoundProjectSearched(){
             <Search sx={{fontSize:80}} className='text-[70px] text-slate-200'/>
             <div className=''>
             <p className='text-gray-400 w-72 text-center text-[13px]'>
-                {`Oops! that project seems to be missing. Try searching with a different keyword`}
+            Oops! that project seems to be missing. Try searching with a different keyword
             </p>
             </div>
         </div>

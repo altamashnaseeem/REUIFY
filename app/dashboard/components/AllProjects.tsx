@@ -99,7 +99,7 @@ export function EmptyProjectPlaceHolder(){
          className='text-[70px] text-slate-200'
           />
           <div className=''>
-            <h3 className='font-semibold text-[15px] mb-1 text-center'>{`There are no projects Yet...`}</h3>
+            <h3 className='font-semibold text-[15px] mb-1 text-center'>There are no projects Yet...</h3>
             <p className='text-gray-400 w-52 text-center text-[13px]'>
               Please Click below to add your first project.
             </p>

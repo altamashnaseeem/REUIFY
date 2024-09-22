@@ -161,21 +161,7 @@ async function addNewComponent(newComponent:Component){
 
 }
 async function updateExistingComponent(updatedComponent:Component){
-  // if(selectedProject && allProjects){
-  //   const updatedComponents=selectedProject.components.map((component)=>
-  //   component._id === updatedComponent._id ? updatedComponent:component
-  //   );
-  //   const updatedProject={
-  //     ...selectedProject,
-  //     components:updatedComponents,
-
-  //   };
-  //   const updatedAllProjects=allProjects.map((project)=>
-  //   project._id === selectedProject._id ? updatedProject:project
-  //   );
-  //   setSelectedProject(updatedProject);
-  //   setAllProjects(updatedAllProjects);
-  // }
+ 
   if(!selectedProject){
     toast.error("No project selected");
     return ;

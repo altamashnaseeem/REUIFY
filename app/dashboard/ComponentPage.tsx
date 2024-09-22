@@ -41,7 +41,7 @@ export function EmptyProjectsPlaceholder(){
         </div>
       )}
       <div className='flex flex-col'>
-        <h3 className='font-semibold text-[19px] mb-1 text-center '>{`There are no components Yet...`}</h3>
+        <h3 className='font-semibold text-[19px] mb-1 text-center '>There are no components Yet...</h3>
         <p className='text-gray-400 text-center text-[14px]'>
           Please click below to add your first component.
         </p>
