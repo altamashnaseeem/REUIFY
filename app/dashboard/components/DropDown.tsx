@@ -12,7 +12,8 @@ function DropDown() {
        selectedComponentObject:{selectedComponent,setSelectedComponent},
        selectedProjectObject:{selectedProject,setSelectedProject},
        allProjectsObject:{allProjects,setAllProjects},
-       openComponentEditorObject:{openComponentEditor,setOpenComponentEditor}
+       openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
+       darkThemeObject:{darkTheme}
 }=UseAppContext();
 const dropDownRef=useRef<HTMLDivElement>(null);
 useEffect(()=>{
@@ -65,53 +66,63 @@ function deleteComponentFunction(){
     setOpenDropDown(false);
     
 }
-function duplicateComponentFunction(){
-  if(selectedComponent && selectedProject){
-     try{
+
+async function duplicateComponentFunction(){
+    if (selectedComponent && selectedProject) {
+      try {
         // create a new component object with a new id & a new name based on the selected component
-        const newComponentObject:Component={
-            ...selectedComponent,
-            _id:uuidv4(),
-            name:`${selectedComponent.name} Copied`,
-            createdAt:new Date().toISOString(),
-
+        const newComponentObject = {
+          ...selectedComponent,
+          _id: uuidv4(),
+          name: `${selectedComponent.name} Copied`,
+          createdAt: new Date().toISOString(),
         };
-        // add the new component to the selected project
-        const updatedSelectedProject={
+  
+        // Send a request to update the selected project in the database
+        const response = await fetch(`/api/projects?projectId=${selectedProject._id}&action=addComponent`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action:"addComponent",
+            component: newComponentObject,
+
+          }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          // Update the selected project in the frontend state
+          const updatedSelectedProject = {
             ...selectedProject,
-            components:[...selectedProject.components,newComponentObject]
-        };
-        // sort the component by created at
-        updatedSelectedProject.components.sort((a,b)=>{
-            return (
-                new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime()
-
-            )
-        });
-        // update the selected project in the selectedProject state
-           setSelectedProject(updatedSelectedProject);
-
-        //    add a copy of the selected component in the allProjects state
-        const updatedAllProjects=allProjects.map((project:Project)=>{
-         if(project._id===selectedProject._id){
-               return updatedSelectedProject;
-
-         }
-         return project;
-
-        });
-        setAllProjects(updatedAllProjects);
-        toast.success("Component has been duplicated successfully");
-
-        
-     }catch(error){
+            components: data.project.components,
+          };
+  
+          // Sort components by createdAt
+          updatedSelectedProject.components.sort((a:any, b:any) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          });
+  
+          setSelectedProject(updatedSelectedProject);
+  
+          // Update the allProjects state
+          const updatedAllProjects = allProjects.map((project) =>
+            project._id === selectedProject._id ? updatedSelectedProject : project
+          );
+          setAllProjects(updatedAllProjects);
+  
+          toast.success("Component has been duplicated successfully");
+        } else {
+          toast.error(data.message || "Failed to duplicate component");
+        }
+      } catch (error) {
         toast.error("Failed to duplicate component");
-
-     }
-     
+      }
+    }
   }
-}
- 
+  
 
   return (
     <div
@@ -122,7 +133,7 @@ function duplicateComponentFunction(){
         visibility:openDropDown?"visible":"hidden",
 
     }}
-    className='bg-white z-50 px-5 border border-slate-50 fixed py-4 w-[150px] select-none  shadow-md rounded-lg flex flex-col gap-5 '
+    className={` ${darkTheme?"bg-slate-950":"bg-white border border-slate-50"} z-50 px-5  fixed py-4 w-[150px] select-none  shadow-md rounded-lg flex flex-col gap-5`}
 >
     {/* Edit Icon */}
     <div 
@@ -135,23 +146,23 @@ function duplicateComponentFunction(){
         setOpenDropDown(false);
         
     }}
-    className='flex gap-1 items-center text-slate-600 cursor-pointer hover:text-sky-500'>
+    className={` ${darkTheme?"text-slate-400":"text-slate-600"} flex gap-1 items-center  cursor-pointer hover:text-sky-500`}>
         <EditOutlined sx={{fontSize:21}} className='text'/>
         <span className='text-[14px]'>Edit</span>
     </div>
     {/* Duplicate Icon */}
     <div 
     onClick={duplicateComponentFunction}
-    className='flex gap-1 items-center text-slate-600 cursor-pointer hover:text-sky-500'>
+    className={` ${darkTheme?"text-slate-400":"text-slate-600"} flex gap-1 items-center  cursor-pointer hover:text-sky-500`}>
         <ContentCopy sx={{fontSize:21}} className='text-[21px]'/>
         <span className='text-[14px]'>Duplicate</span>
     </div>
     {/* Divider Line */}
-    <hr className='border-t border-slate-200'/>
+    <hr className={`border-t ${darkTheme?"border-slate-500":"border-slate-200"}`}/>
     {/* RemoveIcon */}
     <div 
     onClick={deleteComponentFunction}
-    className='flex gap-1 items-center text-slate-600 cursor-pointer hover:text-red-500'>
+    className={` ${darkTheme?"text-slate-400":"text-slate-600"} flex gap-1 items-center  cursor-pointer hover:text-sky-500`}>
         <DeleteOutline sx={{fontSize:21}} className='text-[21px]'/>
         <span className='text-[14px]'>Delete</span>
     </div>

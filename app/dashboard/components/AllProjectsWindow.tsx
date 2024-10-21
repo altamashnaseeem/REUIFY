@@ -7,14 +7,14 @@ import { Project } from '@/app/allData';
 import { TextToIcon } from '@/app/utils/textToIcon';
 function AllProjectsWindow() {
     const {openAllProjectsWindowObject:{openAllProjectsWindow},
-   
+   darkThemeObject:{darkTheme}
 }=UseAppContext();
    const [searchQuery,setSearchQuery]=useState("");
 
   return (
     <div
     style={{display:openAllProjectsWindow?"block":"none"}}
-    className='w-[70%] max-sm:w-[90%] p-9 border border-slate-50 h-[82%] bg-white rounded-xl shadow-md absolute left-1/2 top-8 -translate-x-1/2 z-50'
+    className={`w-[70%] max-sm:w-[90%] p-9 max-h-[82%] ${darkTheme?"bg-slate-950":"bg-white border border-slate-50"} rounded-xl shadow-md absolute left-1/2 top-8 -translate-x-1/2 z-50`}
     >
      <Header/> 
      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
@@ -26,7 +26,8 @@ function AllProjectsWindow() {
 function Header(){
     const {menuItemsObject:{menuItems,setMenuItems},
     openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
-    mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+    mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery},
+    darkThemeObject:{darkTheme}
 }=UseAppContext();
 
   function closeTheWindow(){
@@ -45,10 +46,10 @@ function Header(){
     return(
         <div className='flex justify-between items-center'>
             <div className='flex items-center gap-2'>
-            <div className='w-[30px] h-[30px] bg-sky-200 rounded-full flex items-center justify-center'>
+            <div className={`w-[30px] h-[30px] ${darkTheme?"bg-slate-800":"bg-sky-200"} rounded-full flex items-center justify-center`}>
                 <Category sx={{fontSize:17}} className='text-sky-400 text-[17px]'/>
             </div>
-            <span className='text-xl font-bold'>All Projects</span>
+            <span className={`text-xl font-semibold ${darkTheme?"text-slate-200":"text-slate-900"}`}>All Projects</span>
             </div>
               <div>
                 <Close onClick={closeTheWindow} sx={{fontSize:16}} className='text-slate-400 cursor-pointer'/>
@@ -64,7 +65,8 @@ function SearchBar({searchQuery,setSearchQuery}:{
 }){
 const {openAllProjectsWindowObject:{openAllProjectsWindow,setOpenAllProjectsWindow},
   openProjectWindowObject:{openProjectWindow,setOpenProjectWindow},
-  mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+  mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery},
+  darkThemeObject:{darkTheme}
   
 }=UseAppContext();
 const inputRef=useRef<HTMLInputElement>(null);
@@ -95,13 +97,13 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
 
     return (
         <div className='flex gap-5 items-center justify-between mt-12 relative'>
-            <div className={`relative h-[42px] bg-slate-50 flex items-center text-sm rounded-md pl-3 gap-1 w-[85%]`}>
+            <div className={`relative h-[42px] ${darkTheme?"bg-slate-800":"bg-slate-50"} flex items-center text-sm rounded-md pl-3 gap-1 w-[85%]`}>
                 <SearchRounded className='text-slate-400'/>
                 <input 
                 ref={inputRef}
                 value={searchQuery}
                 onChange={handleChange}
-                placeholder='Search a Project...' className='bg-transparent outline-none w-full font-light'/>
+                placeholder='Search a Project...' className='bg-transparent outline-none w-full text-slate-200 font-light'/>
                 {/* Close icon */}
                 
                 {searchQuery.length>0 && (
@@ -172,13 +174,14 @@ sortingOptionsObject:{sortingOptions}
 function ProjectsList({searchQuery}:{searchQuery:string}){
     const {allProjectsObject:{allProjects},
         isLoadingObject:{isLoading},
-        sortedProjectsObject:{sortedProjects}
+        sortedProjectsObject:{sortedProjects},
+        darkThemeObject:{darkTheme}
 }=UseAppContext();
 const filterAllProjectsBySearchQuery=sortedProjects.filter((singleProject)=>
 singleProject.name.toLowerCase().includes(searchQuery.toLowerCase())
 )
     return (
-     <div className='w-full bg-slate-50 h-[57%] rounded-lg p-5 flex flex-col gap-3 overflow-auto'>
+     <div className={`w-full ${darkTheme?"bg-slate-800":"bg-slate-50"} max-h-[57%] rounded-lg p-5 flex flex-col gap-3 overflow-auto`}>
         {isLoading && (
             <div className='flex flex-col gap-3 justify-center items-center items-center w-full mt-28'>
                 <CircularProgress value={100}/>
@@ -220,7 +223,8 @@ function SingleProject({project}:{project:Project}){
 selectedProjectObject:{selectedProject,setSelectedProject},
 openAllProjectsWindowObject:{setOpenAllProjectsWindow},
 showComponentPageObject:{setShowComponentPage},
-openDeleteWindowObject:{setOpenDeleteWindow}
+openDeleteWindowObject:{setOpenDeleteWindow},
+darkThemeObject:{darkTheme}
 }=UseAppContext()
     function editTheProjectClicked(){
         setOpenProjectWindow(true);
@@ -243,12 +247,12 @@ openDeleteWindowObject:{setOpenDeleteWindow}
         
     }
     return (
-        <div className='w-full bg-white rounded-md flex gap-3 items-center justify-between p-3'>
+        <div className={`w-full ${darkTheme?"bg-slate-950":"bg-white"} rounded-md flex gap-3 items-center justify-between p-3`}>
             <div className='flex gap-3 items-center'>
                 <DragIndicatorRounded className='text-slate-400'/>
                 {/* project icon */}
                 <div>
-                    <div className='w-[30px] h-[30px] bg-sky-200 rounded-full flex items-center justify-center'>
+                    <div className={`w-[30px] h-[30px] ${darkTheme?"bg-slate-900":"bg-sky-200"} rounded-full flex items-center justify-center`}>
                      {TextToIcon(
                         {
                             text:project.icon,
@@ -260,21 +264,21 @@ openDeleteWindowObject:{setOpenDeleteWindow}
                 </div>
                 {/* project name */}
                 <div className='flex flex-col '>
-                    <span className='font-bold'>{project.name}</span>
-                    <span onClick={openTheProject} className='text-slate-400 text-[12px] hover:text-sky-500'>{project.components.length}</span>
+                    <span className={`${darkTheme?"text-slate-200":"text-slate-900"} font-semibold`}>{project.name}</span>
+                    <span onClick={openTheProject} className={` ${darkTheme?"text-sky-400 bg-slate-700":"text-sky-400 bg-sky-100"}  text-[12px] w-[20px]  rounded-md text-center hover:text-sky-500`}>{project.components.length}</span>
                 </div>
             </div>
             {/* Action Buttons */}
           <div className='flex gap-2 items-center'>
             <div 
             onClick={editTheProjectClicked}
-            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
-                <EditRounded className='text-slate-400' sx={{fontSize:15}}/>
+            className={`rounded-full w-7 h-7 ${darkTheme?"bg-slate-900 hover:bg-slate-800":"bg-slate-200 hover:bg-slate-300"} flex items-center justify-center cursor-pointer  `}>
+                <EditRounded className={`${darkTheme?"text-sky-500":"text-slate-400"}`} sx={{fontSize:15}}/>
             </div>
             <div 
             onClick={openDeleteWindow}
-            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
-                <Delete className='text-slate-400' sx={{fontSize:15}}/>
+            className={`rounded-full w-7 h-7 flex ${darkTheme?"bg-slate-900 hover:bg-slate-800":"bg-slate-200 hover:bg-slate-300"} items-center justify-center cursor-pointer`}>
+                <Delete className={`${darkTheme?"text-sky-500":"text-slate-400"}`} sx={{fontSize:15}}/>
             </div>
           </div>
         </div>

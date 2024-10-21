@@ -10,21 +10,30 @@ import prettier from "prettier/standalone"
 import babelPlugin from "prettier/plugins/babel"
 import estreePlugin from "prettier/plugins/estree"
 import "ace-builds/src-noconflict/mode-jsx"
-import "ace-builds/src-noconflict/theme-tomorrow";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { LiveError, LivePreview, LiveProvider } from 'react-live';
 import toast from 'react-hot-toast';
 import { Component } from '@/app/allData';
 import {v4 as uuidv4} from "uuid"
 import { IconButton } from '@mui/material';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import SettingsOverscanOutlinedIcon from '@mui/icons-material/SettingsOverscanOutlined';
+import { PageWrapper } from '@/app/PageWrapper';
+import { divide } from 'lodash';
 function ComponentEditor() {
     const {openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
        allProjectsObject:{allProjects,setAllProjects},
        selectedProjectObject:{selectedProject,setSelectedProject},
        selectedComponentObject:{selectedComponent,setSelectedComponent},
+       darkThemeObject:{darkTheme},
+       isDayObject:{isDay}
 
   }=UseAppContext()
 const [code,setCode]=useState(selectedComponent? (selectedComponent.code):(`<></>`));
+
 const [inputName,setInputName]=useState<string>("");
     
 const [copySuccess,setCopySuccess]=useState(false);
@@ -53,7 +62,6 @@ const formatCode=async (codeToFormat:string)=>{
 }
 const handleChange=(newValue:string)=>{
     setCode(newValue);
-    
 
 }
 function saveCompnent(){
@@ -84,7 +92,7 @@ if(!selectedComponent){
     name:inputName,
     code:code,
     isFavorite:false,
-    createdAt:new Date().toISOString(),
+    createdAt:new Date().toISOString().split('T')[0],
     projectName:selectedProject.name,
 
   }
@@ -278,24 +286,53 @@ const resetEditor = () => {
   }
 };
 
+const [isZoom,setIsZoom]=useState(false);
+
   return (
     <div 
      style={{display: openComponentEditor?"flex":"none"}}
-     className='w-[96%] h-[735px] max-sm:h-[90%] max-sm:flex-col border-slate-100 flex-row overflow-hidden bg-white absolute left-1/2 top-2 rounded-2xl shadow-md -translate-x-1/2 z-50 '
+     className={`w-[96%] h-[735px] max-sm:h-[90%] max-sm:flex-col border-slate-100 flex-row overflow-hidden ${darkTheme?"bg-slate-950":"bg-white"} absolute left-1/2 top-2 rounded-2xl shadow-md -translate-x-1/2 z-50`}
     >
     {/* left part */}
 
-      <div className='w-1/2 max-sm:w-full h-full'>
+     {isZoom?( <div className={` w-3/5 max-sm:w-full h-full`}> <div className={` border border-slate-200  rounded-md relative mt-1`}>
+        <span onClick={()=>setIsZoom(!isZoom)} className='absolute top-0.5 left-[750px] cursor-pointer z-10 text-gray-400 '><SettingsOverscanOutlinedIcon/></span>
+         
+          <AceEditor
+          ref={aceEditorRef}
+          onLoad={(editorInstance)=>{
+            editorInstanceRef.current=editorInstance;
+          }}
+          mode="jsx"
+          theme={isDay ? "github" : "monokai"}
+          onChange={handleChange}
+          name="jsxEditor"
+          value={code}
+          editorProps={{$blockScrolling:true}}
+          setOptions={{
+            enableBasicAutocompletion:true,
+            enableLiveAutocompletion:true,
+            enableSnippets:true,
+            showLineNumbers:true,
+            tabSize:2,
+
+          }}
+          fontSize={14}
+          width='100%'
+          height="800px"
+
+          />
+        </div></div>):( <div className={` w-3/5 max-sm:w-full h-full`}>
        {/* header */}
        <div className='flex justify-between items-center pt-7 px-8'>
         <div className='flex items-center gap-2'>
             {/* category icon */}
-            <div className='w-[30px] h-[30px] bg-sky-200 rounded-full flex items-center justify-center'>
+            <div className={` ${darkTheme?"bg-slate-900":"bg-sky-200"} w-[30px] h-[30px]  rounded-full flex items-center justify-center`}>
                 <FormatShapes sx={{fontSize:17}} className='text-sky-400 text-[17px]'/>
 
             </div>
             {/* Category Header */}
-            <span className='font-semibold'>Component Editor</span>
+            <span className={`${darkTheme?"text-slate-200":"text-slate-900"} font-semibold`}>Component Editor</span>
 
         </div>
         <CloseIcon 
@@ -315,13 +352,13 @@ const resetEditor = () => {
        <div className='flex flex-col gap-2 pt-14 px-8'>
         {/* input label */}
         <div className='flex gap-3'>
-            <span className='flex gap-1 items-center text-[13px]'>
+            <span className={`${darkTheme?"text-slate-200":"text-slate-900"} flex gap-1 items-center text-[13px]`}>
                 
                 <span>Component Name</span>
             </span>
             <div>
-                <Checkbox icon={<FavoriteBorder sx={{fontSize:19}}/>}
-                checkedIcon={<FavoriteIcon className="text-sky-300"/>}
+                <Checkbox icon={<FavoriteBorder sx={{fontSize:19}} className='text-slate-500'/>}
+                checkedIcon={<FavoriteIcon className="text-sky-500"/>}
                 onChange={updateTheFavoriteState}
                 checked={selectedComponent?.isFavorite}
                 />
@@ -333,7 +370,7 @@ const resetEditor = () => {
             <input 
              ref={inputRef}
             placeholder='Enter Component Name...' 
-            className='p-[10px] text-[12px] w-full rounded-md border outline-none'
+            className={`${darkTheme?"bg-slate-900 text-slate-200 outline-none":"border outline-none bg-sky-50"} p-[10px] text-[12px] w-full rounded-md `}
            
             value={inputName}
             onChange={(e)=>setInputName(e.target.value)}
@@ -346,20 +383,22 @@ const resetEditor = () => {
         <div className='flex justify-between'>
             {/* Input Label */}
             <div className='flex gap-3'>
-            <span className='flex gap-1 items-center text-[13px]'>
+            <span className={`${darkTheme?"text-slate-200":"text-slate-900"} flex gap-1 items-center text-[13px]`}>
                 <CodeIcon className="text-[15px] font-bold"/>
                  <span>JSX Code</span>
             </span>
             <IconButton
             onClick={copyTheCode}
+            
             >
              {!copySuccess ?(
-              <ContentCopy sx={{fontSize:17}}/>
+              <ContentCopy sx={{fontSize:17}} className={`${darkTheme?"text-slate-200":"text-slate-900"}`}/>
              ):(
-              <DoneAll sx={{fontSize:17}}/>
+              <DoneAll sx={{fontSize:17}} className={`${darkTheme?"text-slate-200":"text-slate-900"}`}/>
              )}
             </IconButton>
             </div>
+            <Toggle/>
             <button
             onClick={saveCompnent}
             className='bg-sky-500 hover:bg-sky-600 text-white text-[12px] p-2 rounded-md transition-all '
@@ -368,15 +407,16 @@ const resetEditor = () => {
 
             </button>
         </div>
-        <div className='border border-slate-200 rounded-md relative mt-1'>
-        
+        <div className={` border border-slate-200  rounded-md relative mt-1`}>
+        <span onClick={()=>setIsZoom(!isZoom)} className='absolute top-0.5 left-[668px] cursor-pointer z-10 text-gray-400 '><SettingsOverscanOutlinedIcon/></span>
+         
           <AceEditor
           ref={aceEditorRef}
           onLoad={(editorInstance)=>{
             editorInstanceRef.current=editorInstance;
           }}
           mode="jsx"
-          theme="Dreamweaver"
+          theme={isDay ? "github" : "monokai"}
           onChange={handleChange}
           name="jsxEditor"
           value={code}
@@ -391,20 +431,22 @@ const resetEditor = () => {
           }}
           fontSize={14}
           width='100%'
-          height='440px'
+          height="440px"
 
           />
         </div>
        </div>
-      </div>
+      </div>)}
       {/* Right Part */}
-      <div className='w-1/2 max-sm:w-full max-sm:border-t border-l max-sm:mt-5 border-slate-100 h-full'>
-       <LiveProvider code={code} noInline={false}>
-        <div className=''>
+      <div className={`${darkTheme?"bg-slate-800":"bg-slate-50"} w-2/5 max-sm:w-full max-sm:border-t border-l max-sm:mt-5 border-slate-100 h-full`}>
+      
+      
+       <LiveProvider code={code} noInline={false} language='jsx'>
+        <div className='tailwind'>
            <LiveError className="rounded-lg border-gray-200 p-4 text-red-600"/>
-             <LivePreview className="rounded-lg border-gray-200 p-4"/>
+             <LivePreview className="rounded-lg border-gray-200  p-4"/>
         </div>
-
+        
        </LiveProvider>
       </div>
     </div>
@@ -412,3 +454,24 @@ const resetEditor = () => {
 }
 
 export default ComponentEditor
+function Toggle(){
+  const {isDayObject:{isDay,setIsDay},darkThemeObject:{darkTheme}}=UseAppContext()
+  const toggleTheme = () => {
+    setIsDay(!isDay);
+  };
+  return (
+    <div onClick={toggleTheme} className={`${darkTheme?"bg-slate-800":"bg-sky-100"} absolute rounded-full transition-all duration-500 ease-in-out  top-50 left-[640px] cursor-pointer flex p-1 gap-2 items-center`}>
+      <div
+        className={`absolute w-[22px] h-[22px] ${darkTheme?"bg-slate-950":"bg-white"} rounded-full transition-transform duration-500 ease-in-out ${
+          isDay ? 'translate-x-[26px]' : 'translate-x-0'
+        }`}
+      ></div>
+     <span  className={` flex items-center  rounded-full text-sky-500 w-[20px] h-[20px] justify-center z-10`}><DarkModeIcon sx={{fontSize:17}}/></span>
+     <span  className={` w-[20px] h-[20px]  text-yellow-400 rounded-full text-center flex items-center justify-center z-10`}><LightModeIcon sx={{fontSize:17}}/></span>
+    </div>
+  )
+}
+
+
+
+

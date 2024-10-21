@@ -16,7 +16,8 @@ const StatsBar = () => {
   
     const {allProjectsObject:{allProjects,setAllProjects},
          allFavoriteComponentsObject:{allFavoriteComponents},
-         isLoadingObject:{isLoading}
+         isLoadingObject:{isLoading},
+         
 }=UseAppContext();
 
   const [statisticsCards,setStatisticsCard]=useState<StatisticCard[]>([]);
@@ -66,11 +67,13 @@ const StatsBar = () => {
 }
 
 function CategoriesCard({singleCard}:{singleCard:StatisticCard}){
-    const {isLoadingObject:{isLoading}}=UseAppContext();
+    const {isLoadingObject:{isLoading},
+    darkThemeObject:{darkTheme}
+}=UseAppContext();
 
     return (
-        <div className='flex gap-4 items-center p-4 bg-white rounded-lg '>
-            <div className='w-[45px] h-[45px] bg-sky-100 rounded-full flex items-center justify-center max-md:hidden'>
+        <div className={`${darkTheme?"bg-slate-900":"bg-white"} flex gap-4 items-center p-4 rounded-lg`}>
+            <div className={`w-[45px] h-[45px] ${darkTheme?"bg-slate-950 border border-slate-600":"bg-sky-100"} rounded-full flex items-center justify-center max-md:hidden`}>
                 {singleCard.icon}
             </div>
             <div className='flex flex-col max-sm:justify-center'>
@@ -82,7 +85,7 @@ function CategoriesCard({singleCard}:{singleCard:StatisticCard}){
                 height={25}
                 />
                ):(
-                <span className='font-bold text-2xl max-sm:text-center '>{singleCard.count}</span>
+                <span className={`${darkTheme?"text-slate-200":"text-slate-900"} font-semibold text-2xl max-sm:text-center`}>{singleCard.count}</span>
                )}
           <span className='text-sm font-light text-slate-400 max-sm:text-[11px] max-sm:text-center'>{singleCard.name}</span>
 

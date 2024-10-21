@@ -2,20 +2,27 @@
 import { UseAppContext } from "../ContextApi";
 import AllProjects from "./components/AllProjects";
 import FavoriteComponent from "./components/FavoriteComponent";
+import MenuBar from "./components/MenuBar";
 import StatsBar from "./components/StatsBar";
 import TopBar from "./components/TopBar";
+import { PageWrapper } from "../PageWrapper";
 function ContentArea(){
-   const {showSideBarObject:{showSideBar},
-          isMobileViewObject:{isMobileView}
+   const {
+          isMobileViewObject:{isMobileView},
+          darkThemeObject:{darkTheme}
   }=UseAppContext();
                                
    return (
-       <div className="w-full h-screen bg-slate-50 p-5">
+       <div className={`${darkTheme?"bg-slate-950":"bg-slate-50"} w-full min-h-screen  p-5`}>
+        
+        <PageWrapper>
+        <MenuBar/>
          <TopBar/>
-         {isMobileView && showSideBar && <SoftLayer/>}
+         {/* {isMobileView  && <SoftLayer/>} */}
          <StatsBar/>
          <AllProjects/>
          <FavoriteComponent/>
+        </PageWrapper>
        </div>
    )
 };

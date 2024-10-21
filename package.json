@@ -14,7 +14,10 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
+    "@tailwindcss/typography": "^0.5.15",
     "ace-code-editor": "^1.2.3",
+    "framer-motion": "^11.11.9",
+    "lodash": "^4.17.21",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.3",
     "next": "14.2.5",
@@ -29,9 +32,11 @@
     "react-live": "^4.1.7",
     "react-syntax-highlighter": "^15.5.0",
     "svix": "^1.30.0",
+    "tailwind-scrollbar": "^3.1.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

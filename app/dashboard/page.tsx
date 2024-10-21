@@ -20,6 +20,7 @@ import Code from "@mui/icons-material/Code"
 import FilterDropDown from "./components/FilterDropDown"
 import AllProjects from "./components/AllProjects"
 import { Component, Project } from "../allData"
+import { PageWrapper } from "../PageWrapper"
 interface SelectedIcon{
   icon:ReactNode;
   name:string;
@@ -36,7 +37,8 @@ function Dashboard(){
   openAllProjectsWindowObject:{openAllProjectsWindow},
   openAllComponentsWindowObject:{openAllComponentsWindow},
   showSearchBarObject:{showSearchBar},
-  mainSearchQueryObject:{mainSearchQuery}
+  mainSearchQueryObject:{mainSearchQuery},
+  clickLogoObject:{clickLogo}
 
 }=
     UseAppContext()
@@ -47,7 +49,7 @@ const [selectedIcon,setSelectedIcon]=useState<SelectedIcon>({
 function getTheIconSelected(icon:IconData){
   setSelectedIcon({icon:icon.icon,name:icon.name})
 }
-
+console.log("clickLogo",clickLogo)
 
 return (
     
@@ -69,12 +71,12 @@ return (
 {(openProjectWindow || openDeleteWindow) && <SoftLayer/>}
 
 
-{openIconWindow && <SoftLayer/> }
-<Sidebar/>
+{openIconWindow && <SoftLayer/>}
+{/* <Sidebar/> */}
 {showComponentPage && openDropDown && <DropDown/>}
-{!showComponentPage?<ContentArea/>:<ComponentPage/>}
+{(!showComponentPage && clickLogo)?<ContentArea/>:<ComponentPage/>}
 
-
+ 
 </div>
 
     

@@ -25,8 +25,7 @@ const ComponentSchema=new Schema({
         default:false
     },
     createdAt:{
-        type:Date,
-        default:Date.now
+        type:String,
     },
     
 })
@@ -53,7 +52,7 @@ const ProjectSchema=new Schema({
    },
    createdAt:{
     type:Date,
-    dafault:Date.now,
+    default:Date.now,
 
    },
    components:[ComponentSchema],

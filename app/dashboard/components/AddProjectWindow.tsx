@@ -28,7 +28,8 @@ export default function AddProjectWindow({
         openProjectWindowObject:{openProjectWindow,setOpenProjectWindow},
         openIconWindowObject:{openIconWindow,setOpenIconWindow},
         allProjectsObject:{allProjects,setAllProjects},
-        selectedProjectObject:{selectedProject,setSelectedProject}
+        selectedProjectObject:{selectedProject,setSelectedProject},
+        darkThemeObject:{darkTheme}
 
 }=UseAppContext()
 const [errorMessage,setErrorMessage]=useState<string>("");
@@ -193,17 +194,17 @@ useEffect(()=>{
   }
  }
     return (
-       <div className={`${isMobileView ? "w-[80%]":"w-[40%]"} h-[288px] border border-slate-50 bg-white rounded-md shadow-md ${openProjectWindow?"absolute":"hidden"} left-1/2 top-24 -translate-x-1/2 z-50`}>
+       <div className={`${isMobileView ? "w-[80%]":"w-[40%]"} h-[288px] ${darkTheme?"bg-slate-950":"border border-slate-50 bg-white"} rounded-md shadow-md ${openProjectWindow?"absolute":"hidden"} left-1/2 top-24 -translate-x-1/2 z-50`}>
         <div className="flex justify-between items-center pt-7 px-7">
             <div className="flex items-center gap-2">
-                <div className="w-[30px] h-[30px] bg-sky-200 rounded-full flex items-center justify-center">
+                <div className={`w-[30px] h-[30px] ${darkTheme?"bg-sky-900":"bg-sky-200"} rounded-full flex items-center justify-center`}>
                     <CategoryIcon 
                      sx={{fontSize:17}}
                      className="text-sky-400 text-[12px]"
                     />
 
                 </div>
-                <span className="font-semibold text-lg">
+                <span className={` ${darkTheme?"text-slate-200":"text-slate-900"} font-semibold text-lg`}>
                     {!selectedProject?"New Project":"Edit Project"}
                 </span>
             </div>
@@ -221,7 +222,7 @@ useEffect(()=>{
         </div>
 
         <div className="flex flex-col gap-2 mt-11 px-7">
-            <span className="text-[13px] font-medium">Project Name</span>
+            <span className={` ${darkTheme?"text-slate-400":"text-slate-600"} text-[13px] font-medium`}>Project Name</span>
             <div className="flex gap-3">
                  
                 <input 
@@ -229,7 +230,7 @@ useEffect(()=>{
                   onChange={handleInputUpdate}
                   placeholder="Enter Category Name..."
                   ref={inputRef}
-                  className="p-[10px] text-[12px] w-full rounded-md border outline-none"
+                  className={`p-[10px] text-[12px] w-full rounded-md  outline-none ${darkTheme?"bg-slate-900":"border"}`}
                 />
                 {/* Error Message */}
                 <div className={`flex items-center gap-2 mt-2 ${errorMessage?"":"hidden"}`}>
@@ -251,7 +252,7 @@ useEffect(()=>{
             <button onClick={()=>{
                 setOpenProjectWindow(false);
                 setSelectedProject(null)
-            }} className="border border-slate-200 text-slate-400 text-[12px] p-2 px-6 rounded-md hover:border-slate-300 transition-all hover:bg-slate-50">
+            }} className={`${darkTheme?"border border-slate-600 hover:opacity-50":"border border-slate-200 hover:bg-slate-50"} text-slate-400 text-[12px] p-2 px-6 rounded-md hover:border-slate-300 transition-all `}>
                    Cancel
             </button>
            <button  

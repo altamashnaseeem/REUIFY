@@ -74,6 +74,8 @@ export async function PUT(request:Request){
         const componentId=url.searchParams.get("componentId");
 
         const {action,name,icon,component}=await request.json();
+      
+
         if(!projectId){
             return NextResponse.json(
                 {message:"Project ID is required"},

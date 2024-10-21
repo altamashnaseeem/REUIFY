@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-      <body className={ poppins.className}>
+      <body className={ poppins.className }>
         <AppProvider>
         {children}
         </AppProvider>

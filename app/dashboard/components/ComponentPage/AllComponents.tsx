@@ -8,7 +8,7 @@ import CodeIcon from "@mui/icons-material/Code"
 import { LiveProvider,LiveError,LivePreview } from 'react-live'
 import SyntaxHighlighter from 'react-syntax-highlighter';
 
-import { atelierSulphurpoolLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { atelierSulphurpoolLight,atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { UseAppContext } from '@/app/ContextApi';
 import { Component, Project } from '@/app/allData';
 import Checkbox from '@mui/material/Checkbox';
@@ -44,6 +44,8 @@ const filteredComponents=selectedProject?.components.filter(
             </div>
   )}
 function SingleComponent({component}:{component:Component}){
+
+
     const [tabMenu,setTabMenu]=useState([
         {
             id:1,
@@ -66,6 +68,7 @@ function SingleComponent({component}:{component:Component}){
      dropDownPositionObject:{setDropDownPosition},
      selectedComponentObject:{setSelectedComponent},
      openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
+     darkThemeObject:{darkTheme}
      
 }=UseAppContext();
    const iconRef=useRef<HTMLDivElement>(null);
@@ -79,53 +82,77 @@ function SingleComponent({component}:{component:Component}){
         })
     }
     const [copySuccess,setCopySuccess]=useState(false);
-    
-    function updateFavoriteState(){
-        
-        const newAllProjects=allProjects.map((project:Project)=>{
-            const updatedComponents=project.components.map((comp:Component)=>{
-            
-                if(comp._id===component._id){
-                
-                    return {
-                        ...comp,
-                        isFavorite:!comp.isFavorite,
+   
+async function updateFavoriteState() {
+  // Optimistic update: update the UI state immediately
+  const updatedComponent = {
+      ...component,
+      isFavorite: !component.isFavorite,
+  };
 
-                    };
-              
+  // Update the UI immediately
+  const newAllProjects = allProjects.map((project: Project) => {
+      const updatedComponents = project.components.map((comp: Component) => {
+          if (comp._id === component._id) {
+              return {
+                  ...comp,
+                  isFavorite: !comp.isFavorite, // Toggle favorite immediately
+              };
+          }
+          return comp;
+      });
 
-                }
-                
-                return comp;
+      return {
+          ...project,
+          components: updatedComponents,
+      };
+  });
 
-            });
+  // Update selected project
+  if (selectedProject) {
+      const updatedSelectedProject = newAllProjects.find(
+          (project: Project) => project._id === selectedProject._id
+      );
+      if (updatedSelectedProject) {
+          setSelectedProject(updatedSelectedProject);
+      }
+  }
 
-         
-            if(updatedComponents !== project.components){
-                return {...project,components:updatedComponents};
+  setAllProjects(newAllProjects);
 
-            }
-            return project;
+  try {
+      // Now make the API call to persist the update in the database
+      const response = await fetch(
+          `/api/projects?projectId=${selectedProject?._id}&componentId=${updatedComponent._id}`,
+          {
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  action: "updateComponent",
+                  component: updatedComponent,
+              }),
+          }
+      );
 
-        }) ;
-        
+      if (!response.ok) {
+          throw new Error("Failed to update favorite state");
+      }
 
-        // update the components array in the selectedProject
-        if(selectedProject){
-            const updatedSelectedProject=newAllProjects.find(
-                (project:Project)=>project._id===selectedProject._id
-            );
-            
-            if(updatedSelectedProject){
-                setSelectedProject(updatedSelectedProject)
-                
+      const updatedProject = await response.json();
+      console.log("updatedProject:", updatedProject.project);
+      
+      // Optionally handle any additional success logic here
+      toast.success("Favorite state updated successfully");
+  } catch (error) {
+      console.error("Error updating favorite state:", error);
+      toast.error(
+          error instanceof Error ? error.message : "Something went wrong"
+      );
+  }
+}
 
-            }
-        }
-        setAllProjects(newAllProjects);
-        
-     
-    }
     function openTheDropDown(event:React.MouseEvent){
         event.stopPropagation();
         if(iconRef.current){
@@ -148,6 +175,7 @@ function SingleComponent({component}:{component:Component}){
 
 function copyTheCode(code:string){
     //Copy the code to clipboard
+    console.log('copu code')
     setCopySuccess(true);
     toast.success("Code has been copied to clipboard");
     setTimeout(()=>{
@@ -156,20 +184,21 @@ function copyTheCode(code:string){
     },1400);
 
 }
+const [expand,setExpand]=useState(false);
     return (
-        <div className='bg-white w-full rounded-lg p-8 pt-8 pb-10 mb-3'>
+        <div className= {`${darkTheme?"bg-slate-900":"bg-white"} w-full rounded-lg p-8 pt-8 pb-10 mb-3`}>
             {/* Component Title */}
             <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
                     <span 
                     onClick={openTheComponentEditor}
-                    className='font-bold text-[19px] cursor-pointer hover:text-sky-500 '>{component.name}</span>
+                    className={`font-semibold ${darkTheme?"text-slate-200":"text-slate-900"} text-[19px] cursor-pointer hover:text-sky-500`}>{component.name}</span>
                     <Checkbox
                     onChange={updateFavoriteState}
                     checked={component.isFavorite}
-                    icon={ <FavoriteBorderIcon className="text-slate-400 text-[20px]"/> 
+                    icon={ <FavoriteBorderIcon className="text-slate-500 text-[20px]"/> 
                     }
-                    checkedIcon={<FavoriteIcon className="text-sky-300"/>}
+                    checkedIcon={<FavoriteIcon className="text-sky-500"/>}
                      
                     />
                 
@@ -187,7 +216,7 @@ function copyTheCode(code:string){
                   <div
                   key={index}
                   onClick={()=>changeTabState(index)}
-                  className={`flex gap-1 items-center cursor-pointer select-none text-slate-400 px-3 py-[4px] rounded-md ${item.isSelected?"bg-sky-500 text-white":"hover:bg-slate-100"}`}
+                  className={`flex gap-1 items-center cursor-pointer select-none text-slate-400 px-3 py-[4px] rounded-md ${item.isSelected?"bg-sky-500 text-white ":"hover:opacity-70 border border-slate-400"}`}
                   >
                {item.icon}
                <span className='mt-[2px]'>{item.name}</span>
@@ -196,21 +225,21 @@ function copyTheCode(code:string){
          </div>
          {/* the component */}
          {tabMenu[0].isSelected ?(
-            <div className='w-full border rounded-md border-slate-200 mt-6'>
+            <div className={`w-full border ${darkTheme?"border-slate-600":"border-slate-200"} rounded-md  mt-6`}>
                 <LiveProvider
                 code={component.code}
                 noInline={false}
                 >
                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <LiveError className="rounded-lg border-gray-200 p-4 text-red-600"/>
-                     <LivePreview className="rounded-lg border-gray-200 p-4"></LivePreview>
+                     <LivePreview className={` ${darkTheme?"text-slate-400":"text-slate-600"} rounded-lg  border-gray-200 p-4`}></LivePreview>
                  </div>
                 </LiveProvider> 
             </div>
          ):(
-            <div className='border rounded-md mt-6 w-full relative'>
-                <div className='absolute top-4 right-4 z-50 rounded-full bg-slate-200'>
-                <IconButton onClick={()=>copyTheCode(component.code)}/>
+            <div className={` ${darkTheme?"border-slate-600":"border"}  rounded-md mt-6 w-full relative`}>
+                <div onClick={()=>copyTheCode(component.code)} className='absolute top-4 right-4  rounded-full bg-slate-200'>
+                <IconButton />
                     {!copySuccess ?(
                         <ContentCopyIcon sx={{fontSize:16}}/>
                     ):(
@@ -220,12 +249,16 @@ function copyTheCode(code:string){
               </div>
               <SyntaxHighlighter
            language={"javascript"}
-           style={atelierSulphurpoolLight}
+           style={darkTheme ? atomOneDark : atelierSulphurpoolLight}
            wrapLines={true}
            wrapLongLines={true}
+           onClick={()=>setExpand(!expand)}
+           className="cursor-pointer"
            >
-            {truncateString(component.code,600)}
+            {expand?component.code:truncateString(component.code,600)}
+            
            </SyntaxHighlighter>
+            
             </div>
          )}
         </div>

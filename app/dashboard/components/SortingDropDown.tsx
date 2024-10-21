@@ -3,12 +3,15 @@ import { UseAppContext } from '@/app/ContextApi'
 import React, { useEffect, useRef, useState } from 'react'
 
 function SortingDropDown() {
+    
     const {openSortingDropDownObject:{openSortingDropDown,setOpenSortingDropDown},
 sortingDropDownPositionsObject:{sortingDropDownPositions:{top,left}},
 allProjectsObject:{allProjects},
 sortingOptionsObject:{sortingOptions,setSortingOptions},
-sortedProjectsObject:{sortedProjects,setSortedProjects}
+sortedProjectsObject:{sortedProjects,setSortedProjects},
+darkThemeObject:{darkTheme}
 }=UseAppContext();
+
 
 const DropDownRef=useRef<HTMLDivElement>(null);
 const handleOptionClick=(categoryIndex:number,optionIndex:number)=>{
@@ -20,7 +23,7 @@ const handleOptionClick=(categoryIndex:number,optionIndex:number)=>{
             selected:cIndex === categoryIndex && oIndex === optionIndex
         })),
     }));
-    console.log("new options>>>",newOptions)
+
 // find the selected option
  const selectedOption=newOptions
     .flatMap((c)=>c.options)
@@ -47,7 +50,7 @@ useEffect(()=>{
     }
     function handleScroll(){
         setOpenSortingDropDown(false);
-
+        
     }
     function handleWheel(event:WheelEvent){
         if(event.deltaY!==0){
@@ -118,12 +121,13 @@ function sortProjects(projects:Project[],sortOption:string):Project[]{
         top:top + 35,
         left:left -100
       }}
-      className='bg-white text-sm top-[170px] right-14 z-[60] px-4 border border-slate-50 fixed py-6 w-[160px] select-none shadow-md rounded-lg gap-10 flex flex-col  '
+      className={`text-sm top-[170px] right-14 z-[60] px-4  ${darkTheme?"bg-slate-900":"bg-white border border-slate-50"} fixed py-6 w-[160px] select-none shadow-md rounded-lg gap-10 flex flex-col`}
     >
       {/* Order */}
       {sortingOptions.map((category,categoryIndex)=>(
-          <div key={categoryIndex} className='flex flex-col gap-1 text-slate-600 cursor-pointer'>
-          <span className={`text-[13px] font-bold ${category.category==="Date"?"mt-3":""}`}>{category.category}</span>
+          <div key={categoryIndex} className={`flex flex-col gap-1 ${darkTheme?"text-slate-400":"text-slate-600"} cursor-pointer`}>
+            
+          <span className={`text-[13px] ${darkTheme?"text-slate-200":"text-slate-600"} font-semibold ${category.category==="Date"?"mt-3":""}`}>{category.category}</span>
           <div className='flex flex-col gap-2 ml-2 mt-[2px]'>
 
              {category.options.map((option,optionIndex)=>(

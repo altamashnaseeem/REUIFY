@@ -7,9 +7,10 @@ import toast from 'react-hot-toast';
 function DeleteWindow() {
     const {openDeleteWindowObject:{openDeleteWindow,setOpenDeleteWindow},
           selectedProjectObject:{selectedProject,setSelectedProject},
-          selectedComponentObject:{selectedComponent},
+          selectedComponentObject:{selectedComponent,setSelectedComponent},
           allProjectsObject:{allProjects,setAllProjects},
-          openAllProjectsWindowObject:{openAllProjectsWindow}
+          openAllProjectsWindowObject:{openAllProjectsWindow},
+          darkThemeObject:{darkTheme}
 }=UseAppContext();
 async function deleteProjectFunction(){
   if(!selectedProject?._id){
@@ -80,7 +81,7 @@ async function deleteComponentFunction(){
 
     });
     setAllProjects(updatedAllProjects);
-    
+    setSelectedComponent(null);
        setOpenDeleteWindow(false);
        toast.success("Component deleted successfully");
     }
@@ -97,11 +98,11 @@ async function deleteComponentFunction(){
   return (
     <div
     style={{visibility:openDeleteWindow?"visible":"hidden"}}
-    className='w-[40%] max-sm:w-[90%] fixed top-1/2 left-1/2 p-8 px-9 border border-slate-100 bg-white shadow-md transform -translate-x-1/2 -translate-y-1/2 z-50'
+    className={` ${darkTheme?"bg-slate-950":"border border-slate-100 bg-white"} w-[40%] max-sm:w-[90%] fixed top-1/2 left-1/2 p-8 px-9  shadow-md transform -translate-x-1/2 -translate-y-1/2 z-50`}
     >
      {/* header icon */} 
      <div className='flex justify-between items-start'>
-        <div className='w-[42px] h-[42px] bg-red-200 rounded-full flex items-center justify-center'>
+        <div className={` ${darkTheme?"":""} w-[42px] h-[42px] bg-red-200 rounded-full flex items-center justify-center`}>
         <DeleteIcon className='text-red-500 text-[24px]'/>
         </div>
         <CloseIcon 
@@ -113,13 +114,13 @@ async function deleteComponentFunction(){
       {/* Message */}
       <div className='flex flex-col mt-7'>
         {/* main message */}
-        <span className='font-bold'>
+        <span className={` ${darkTheme?"text-slate-100":"text-slate-900"} font-semibold`}>
           Permanently delete this{" "}
           {openAllProjectsWindow ? "project":"component"}?
           
           </span>
         {/* second  message */}
-        <span className='text-slate-400 text-[13px] mt-2'>Are you sure you want to permanently delete this{" "}
+        <span className={` ${darkTheme?"":""} text-slate-400 text-[13px] mt-2`}>Are you sure you want to permanently delete this{" "}
 
           {openAllProjectsWindow?"project":"component"}?
         </span>

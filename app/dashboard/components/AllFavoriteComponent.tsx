@@ -10,7 +10,8 @@ import { openComponent, openTheDeleteWindow } from './FavoriteComponent';
 function AllFavoriteComponent() {
    const {openAllComponentsWindowObject:{openAllComponentsWindow,setOpenAllComponentsWindow},
      menuItemsObject:{menuItems,setMenuItems},
-     selectedComponentObject:{selectedComponent,setSelectedComponent}
+     selectedComponentObject:{selectedComponent,setSelectedComponent},
+     darkThemeObject:{darkTheme}
 }=UseAppContext();
 function closeTheWindow(){
     //set the first item to selected as true and other as a false
@@ -28,7 +29,7 @@ const [searchInput,setSearchInput]=useState("");
   return (
     <div
     style={{display:openAllComponentsWindow?"block":"none"}}
-    className='w-[70%] max-sm:w-[90%] p-9 border border-slate-50 h-[82%] bg-white rounded-xl shadow-md absolute left-1/2 top-8 -translate-x-1/2 z-50'
+    className={`w-[70%] max-sm:w-[90%] p-9 ${darkTheme?"bg-slate-950":"border border-slate-50 bg-white"} max-h-[82%]  rounded-xl shadow-md absolute left-1/2 top-8 -translate-x-1/2 z-50`}
     >
      <Header/> 
      <SearchBar searchInput={searchInput} setSearchInput={setSearchInput}/>
@@ -41,7 +42,7 @@ function Header(){
     const {openAllComponentsWindowObject:{openAllComponentsWindow,setOpenAllComponentsWindow},
     menuItemsObject:{menuItems,setMenuItems},
     selectedComponentObject:{selectedComponent,setSelectedComponent},
-
+     darkThemeObject:{darkTheme}
 }=UseAppContext();
 function closeTheWindow(){
    //set the first item to selected as true and other as a false
@@ -58,10 +59,10 @@ function closeTheWindow(){
     return(
         <div className='flex justify-between items-center'>
             <div className='flex items-center gap-2'>
-            <div className='w-[30px] h-[30px] bg-sky-200 rounded-full flex items-center justify-center'>
-                <FavoriteRounded sx={{fontSize:17}} className='text-sky-400 text-[17px]'/>
+            <div className={`w-[30px] h-[30px] ${darkTheme?"bg-slate-900":"bg-sky-200"} rounded-full flex items-center justify-center`}>
+                <FavoriteRounded sx={{fontSize:17}} className={`text-sky-400 text-[17px]`}/>
             </div>
-            <span className='text-xl font-bold'>Favorite Components</span>
+            <span className={` ${darkTheme?"text-slate-200":"text-slate-900"} text-xl font-semibold`}>Favorite Components</span>
             </div>
               <div>
                 <Close onClick={closeTheWindow} sx={{fontSize:16}} className='text-slate-400 cursor-pointer'/>
@@ -78,7 +79,8 @@ function SearchBar({searchInput,setSearchInput}:
  const {openAllComponentsWindowObject:{openAllComponentsWindow},
  openFilterDropDownObject:{openFilterDropDown,setOpenFilterDropDown},
  filterDropDownPositionsObject:{filterDropDownPositions,setFilterDropDownPositions},
- allFavoriteComponentsObject:{allFavoriteComponents}
+ allFavoriteComponentsObject:{allFavoriteComponents},
+ darkThemeObject:{darkTheme}
  }=UseAppContext();
  const buttonRef=useRef<HTMLButtonElement>(null);
 useEffect(()=>{
@@ -118,7 +120,7 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
 }
     return (
         <div className='flex gap-5 items-center justify-between mt-12 relative'>
-            <div className={`relative h-[42px] bg-slate-50 flex items-center text-sm rounded-md pl-3 gap-1 w-[80%]`}>
+            <div className={`relative h-[42px] ${darkTheme?"bg-slate-900":"bg-slate-50"} flex items-center text-sm rounded-md pl-3 gap-1 w-[80%]`}>
                 <SearchRounded className='text-slate-400'/>
                 <input 
                 ref={searchInputRef}
@@ -142,7 +144,7 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
             onClick={openFilterDropDownFx}
             style={{opacity:allFavoriteComponents.length>0 ? 1:0.5}}
             disabled={allFavoriteComponents.length>0 ?false:true}
-            className='bg-sky-500 ml-2 p-[10px] flex w-[20%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
+            className='bg-sky-500 hover:bg-sky-400 ml-2 p-[10px] flex w-[20%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
                 <FilterListRounded sx={{fontSize:17}}/>
                 <span className='max-md:hidden'>
                     Filter By: <span className='font-semibold'>Project</span></span>
@@ -193,7 +195,8 @@ function ComponentsNumber(){
 function ComponentsList({searchInput}:{searchInput:string}){
  const {allFavoriteComponentsObject:{allFavoriteComponents,setAllFavoriteComponents},
 isLoadingObject:{isLoading},
-selectedProjectToFilterObject:{selectedProjectToFilter}
+selectedProjectToFilterObject:{selectedProjectToFilter},
+darkThemeObject:{darkTheme}
 }=UseAppContext();
 const filterBySearchInput=selectedProjectToFilter
 ?allFavoriteComponents
@@ -209,7 +212,7 @@ const filterBySearchInput=selectedProjectToFilter
 
 })
     return (
-     <div className='w-full bg-slate-50 h-[55%] rounded-lg p-3 flex flex-col gap-3 overflow-auto'>
+     <div className={`w-full ${darkTheme?"bg-slate-900":"bg-slate-50"} max-h-[55%] rounded-lg p-3 flex flex-col gap-3 overflow-auto`}>
         {isLoading && (
             <div className='flex flex-col gap-3 justify-center items-center w-full mt-28'>
                 <CircularProgress value={100}/>
@@ -241,23 +244,24 @@ function SingleComponent({item}:{item:Component}){
     allProjectsObject:{allProjects,setAllProjects},
     selectedProjectObject:{selectedProject,setSelectedProject},
     openDeleteWindowObject:{setOpenDeleteWindow},
-    openComponentEditorObject:{setOpenComponentEditor}
+    openComponentEditorObject:{setOpenComponentEditor},
+    darkThemeObject:{darkTheme}
 }=UseAppContext();
     return (
-        <div className='w-full bg-white rounded-md flex gap-3 items-center justify-between p-3 px-5'>
+        <div className={` ${darkTheme?"bg-slate-950":"bg-white"} w-full  rounded-md flex gap-3 items-center justify-between p-3 px-5`}>
             <div className='flex gap-3 items-center'>
 
                 <div>
-                    <div className='w-[10px] h-[10px] bg-sky-200 rounded-full flex items-center justify-center'>
+                    <div className={`w-[10px] h-[10px] ${darkTheme?"bg-slate-700":"bg-sky-200"} rounded-full flex items-center justify-center`}>
                     
                     </div>
                 </div>
 
                 {/* component name */}
                 <div className='flex flex-col '>
-                    <span className='font-bold cursor-pointer hover:text-sky-500'>{item.name}</span>
+                    <span className={`font-semibold ${darkTheme?"text-slate-200":"text-slate-900"} cursor-pointer hover:text-sky-500`}>{item.name}</span>
                     <div>
-                    <span className="text-[11px] p-1 px-2 bg-sky-100 text-sky-500 rounded-lg">{item.projectName}</span>
+                    <span className={`text-[11px] p-1 px-2 ${darkTheme?"bg-slate-700":"bg-sky-100"} text-sky-500 rounded-lg`}>{item.projectName}</span>
                 </div>
                 </div>
                 
@@ -274,8 +278,8 @@ function SingleComponent({item}:{item:Component}){
                   setSelectedProject:setSelectedProject,
                 })
                }
-            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
-                <EditRounded className='text-slate-400' sx={{fontSize:15}}/>
+            className={`rounded-full ${darkTheme?"bg-slate-900 hover:bg-slate-800":"bg-slate-200 hover:bg-slate-300"} w-7 h-7 flex items-center justify-center cursor-pointer`}>
+                <EditRounded className={`${darkTheme?"text-sky-500":"text-slate-400"}`} sx={{fontSize:15}}/>
             </div>
             <div 
              onClick={
@@ -289,8 +293,8 @@ function SingleComponent({item}:{item:Component}){
 
                   })
                }
-            className='rounded-full w-7 h-7 flex items-center justify-center cursor-pointer bg-slate-200 hover:bg-slate-300'>
-                <Delete className='text-slate-400' sx={{fontSize:15}}/>
+            className={`${darkTheme?"bg-slate-900 hover:bg-slate-800":"bg-slate-200 hover:bg-slate-300"} rounded-full w-7 h-7 flex items-center justify-center cursor-pointer`}>
+                <Delete className={`${darkTheme?"text-sky-500":"text-slate-400"}`}sx={{fontSize:15}}/>
             </div>
           </div>
         </div>

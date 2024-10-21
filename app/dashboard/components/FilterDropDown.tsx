@@ -10,7 +10,8 @@ function FilterDropDown() {
   filterDropDownPositionsObject:{filterDropDownPositions,setFilterDropDownPositions},
   isMobileViewObject:{isMobileView},
   allProjectsObject:{allProjects},
-  selectedProjectToFilterObject:{selectedProjectToFilter,setSelectedProjectToFilter}
+  selectedProjectToFilterObject:{selectedProjectToFilter,setSelectedProjectToFilter},
+  darkThemeObject:{darkTheme}
   }=UseAppContext();
   const filterDropDownRef=useRef<HTMLDivElement>(null);
   useEffect(()=>{
@@ -82,7 +83,7 @@ project.name.toLowerCase().includes(searchInput.toLowerCase())
             : filterDropDownPositions.left-98,
 
     }}
-    className='bg-white p-3 top-60 right-52 z-[60] border border-slate-50 fixed py-4 w-[310px] select-none shadow-md rounded-lg flex flex-col gap-5'>
+    className={` ${darkTheme?"border-slate-950":"border border-slate-50 bg-white"} p-3 top-60 right-52 z-[60]  fixed py-4 w-[310px] select-none shadow-md rounded-lg flex flex-col gap-5`}>
         <SearchBar searchInput={searchInput} setSearchInput={setSearchInput}/>
         {/* Selected Project */}
         {selectedProjectToFilter && (
@@ -94,9 +95,9 @@ project.name.toLowerCase().includes(searchInput.toLowerCase())
         )}  
 
       {/* Divider Line */}
-      <hr className='border-t border-slate-200'/>
+      <hr className={`border-t ${darkTheme?"border-slate-400":"border-slate-200"}`}/>
       {/* Unique Projects */}
-      <div className='flex flex-col gap-2 overflow-auto h-60 p-2 rounded-md text-slate-600 cursor-pointer bg-slate-50'>
+      <div className={`flex flex-col gap-2 overflow-auto h-60 p-2 rounded-md text-slate-600 cursor-pointer ${darkTheme?"bg-slate-900":"bg-slate-50"}`}>
         {/* Project 1*/}
         {filteredProjects.length === 0 && (
           <div className ='text-[13px] text-slate-400 p-3'>
@@ -104,13 +105,15 @@ project.name.toLowerCase().includes(searchInput.toLowerCase())
           </div>
         )}
         {filteredProjects.map((project)=>(
-          <div key={project._id} className='text-[13px] bg-white rounded-lg p-[9px] px-3 flex items-center justify-between'>
-          <div className='flex items-center gap-1'>
-            <Checkbox checked={selectedProjectToFilter === project.name}
+          <div key={project._id} className={`text-[13px] ${darkTheme?"bg-slate-950":"bg-white"} rounded-lg p-[9px] px-3 flex items-center justify-between`}>
+          <div className='flex items-center gap-1 '>
+            <Checkbox  checked={selectedProjectToFilter === project.name}
             onClick={()=>handleProjectSelect(project.name)}
+            sx={{color:darkTheme?'#a7a9aa' : '#4a4b4c'}}
             size='small'
+
             />
-            <span>{project.name}</span>
+            <span className={`${darkTheme?"text-slate-400":"text-slate-600"}`}>{project.name}</span>
           </div>
           <span className='text-sky-400 p-1 px-2 rounded-full'>{project.favoriteCount}</span>
         </div>
@@ -127,7 +130,9 @@ function SearchBar({searchInput,setSearchInput}:{
   setSearchInput:React.Dispatch<React.SetStateAction<string>>;
 
 }){
-  const {openFilterDropDownObject:{openFilterDropDown}}=UseAppContext();
+  const {openFilterDropDownObject:{openFilterDropDown},
+darkThemeObject:{darkTheme}
+}=UseAppContext();
   const inputRef=useRef<HTMLInputElement>(null);
   function handleSearchInput(event:React.ChangeEvent<HTMLInputElement>){
     setSearchInput(event.target.value);
@@ -140,7 +145,7 @@ function SearchBar({searchInput,setSearchInput}:{
     }
   },[openFilterDropDown])
   return (
-    <div className={`h-[38px] bg-slate-50 flex items-center text-[13px] rounded-md pl-2 gap-1 w-[100%]`}>
+    <div className={`h-[38px] ${darkTheme?"bg-slate-900 text-slate-400":"bg-slate-50"} flex items-center text-[13px] rounded-md pl-2 gap-1 w-[100%]`}>
       <div className='flex items-center gap-1'>
       <SearchRounded sx={{fontSize:17}} className='text-slate-400'/>
       <input

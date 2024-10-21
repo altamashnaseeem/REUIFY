@@ -14,6 +14,28 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import MenuIcon from '@mui/icons-material/Menu';
 import CodeIcon from '@mui/icons-material/Code';
 import { UseAppContext } from "./ContextApi";
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft';
+import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
+import AlignVerticalCenterIcon from '@mui/icons-material/AlignVerticalCenter';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
+import AppsIcon from '@mui/icons-material/Apps';
+import ArticleIcon from '@mui/icons-material/Article';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+import BackupTableIcon from '@mui/icons-material/BackupTable';
+import BentoIcon from '@mui/icons-material/Bento';
+import BlurOnIcon from '@mui/icons-material/BlurOn';
+import BorderAllIcon from '@mui/icons-material/BorderAll';
+import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
+import GamepadIcon from '@mui/icons-material/Gamepad';
+import GraphicEqIcon from '@mui/icons-material/GraphicEq';
+import HexagonIcon from '@mui/icons-material/Hexagon';
+import HiveIcon from '@mui/icons-material/Hive';
+import InterestsIcon from '@mui/icons-material/Interests';
 
 export interface IconData{
     id:number;
@@ -64,8 +86,75 @@ export const allIconsArray:IconData[]=[
         id:13,icon:<MenuIcon className="text-[20px]"/>,isSelected:false,name:"MenuIcon"
     },
     {
-        id:13,icon:<CodeIcon className="text-[20px]"/>,isSelected:false,name:"CodeIcon"
+        id:14,icon:<CodeIcon className="text-[20px]"/>,isSelected:false,name:"CodeIcon"
     },
+    {
+        id:15,icon:<InterestsIcon className="text-[20px]"/>,isSelected:false,name:"InterestsIcon"
+    },
+    {
+        id:16,icon:<HiveIcon className="text-[20px]"/>,isSelected:false,name:"HiveIcon"
+    },
+    {
+        id:17,icon:<HexagonIcon className="text-[20px]"/>,isSelected:false,name:"HexagonIcon"
+    },
+    {
+        id:18,icon:<GraphicEqIcon className="text-[20px]"/>,isSelected:false,name:"GraphicEqIcon"
+    },
+    {
+        id:19,icon:<GamepadIcon className="text-[20px]"/>,isSelected:false,name:"GamepadIcon"
+    },
+    {
+        id:20,icon:<DeveloperBoardIcon className="text-[20px]"/>,isSelected:false,name:"DeveloperBoardIcon"
+    },
+    {
+        id:21,icon:<DashboardCustomizeIcon className="text-[20px]"/>,isSelected:false,name:"DashboardCustomizeIcon"
+    },
+    {
+        id:22,icon:<CalendarViewDayIcon className="text-[20px]"/>,isSelected:false,name:"CalendarViewDayIcon"
+    },
+    {
+        id:23,icon:<BorderAllIcon className="text-[20px]"/>,isSelected:false,name:"BorderAllIcon"
+    },
+    {
+        id:24,icon:<BlurOnIcon className="text-[20px]"/>,isSelected:false,name:"BlurOnIcon"
+    },
+    {
+        id:25,icon:<BentoIcon className="text-[20px]"/>,isSelected:false,name:"BentoIcon"
+    },
+    {
+        id:26,icon:<BackupTableIcon className="text-[20px]"/>,isSelected:false,name:"BackupTableIcon"
+    },
+    {
+        id:27,icon:<AutoAwesomeMosaicIcon className="text-[20px]"/>,isSelected:false,name:"AutoAwesomeMosaicIcon"
+    },
+    {
+        id:28,icon:<AssessmentIcon className="text-[20px]"/>,isSelected:false,name:"AssessmentIcon"
+    },
+    {
+        id:29,icon:<ArticleIcon className="text-[20px]"/>,isSelected:false,name:"ArticleIcon"
+    },
+    {
+        id:30,icon:<AppsIcon className="text-[20px]"/>,isSelected:false,name:"AppsIcon"
+    },
+    {
+        id:31,icon:<AllInclusiveIcon className="text-[20px]"/>,isSelected:false,name:"AllInclusiveIcon"
+    },
+    {
+        id:32,icon:<AlignVerticalCenterIcon className="text-[20px]"/>,isSelected:false,name:"AlignVerticalCenterIcon"
+    },
+    {
+        id:33,icon:<AlignVerticalBottomIcon className="text-[20px]"/>,isSelected:false,name:"AlignVerticalBottomIcon"
+    },
+    {
+        id:34,icon:<AlignHorizontalRightIcon className="text-[20px]"/>,isSelected:false,name:"AlignHorizontalRightIcon"
+    },
+    {
+        id:35,icon:<AlignHorizontalLeftIcon className="text-[20px]"/>,isSelected:false,name:"AlignHorizontalLeftIcon"
+    },
+    {
+        id:36,icon:<AcUnitIcon className="text-[20px]"/>,isSelected:false,name:"AcUnitIcon"
+    },
+
 
 ]
 
@@ -104,7 +193,7 @@ export default function AllIcons({
             key={index}
             onClick={()=>handleClickedIcon(singleIcon)}
             className={`w-9 h-9 shadow-sm border border-slate-50 flex items-center 
-                justify-center rounded-lg hover:bg-sky-500 hover:text-white ${singleIcon.isSelected?"bg-sky-500 text white":"bg-white text-sky-500"}
+                justify-center rounded-lg hover:bg-sky-500 hover:text-white ${singleIcon.isSelected?"bg-sky-500 text-white":"bg-white text-sky-500"}
                 `}
             >
                 {singleIcon.icon}

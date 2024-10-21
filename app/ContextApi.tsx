@@ -40,9 +40,18 @@ export interface Category{
 
 }
 interface AppContexttype{
+    darkThemeObject:{
+        darkTheme:boolean;
+        setDarkTheme:React.Dispatch<React.SetStateAction<boolean>>
+    };
+
     menuItemsObject:{
         menuItems:MenuItem[];
         setMenuItems:React.Dispatch<React.SetStateAction<MenuItem[]>>
+    };
+    menuObject:{
+        menu:MenuItem[];
+        setMenu:React.Dispatch<React.SetStateAction<MenuItem[]>>
     };
     openSideBarObject:{
         openSideBar:boolean;
@@ -171,6 +180,15 @@ liveSearchPositionsObject:{
     liveSearchPositions:Position;
     setLiveSearchPositions:React.Dispatch<React.SetStateAction<Position>>;
 };
+clickLogoObject:{
+    clickLogo:boolean;
+    setClickLogo:React.Dispatch<React.SetStateAction<boolean>>;
+};
+isDayObject:{
+    isDay:boolean;
+    setIsDay:React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 
    }
 
@@ -178,10 +196,18 @@ liveSearchPositionsObject:{
 
 //create a default state
 const defaultState:AppContexttype={
+    darkThemeObject:{
+        darkTheme:true,
+        setDarkTheme:()=>{}
+    },
     menuItemsObject:{
         menuItems:[],
         setMenuItems:()=>{},
 
+    },
+    menuObject:{
+        menu:[],
+        setMenu:()=>{},
     },
   openSideBarObject:{
     openSideBar:true,
@@ -307,6 +333,14 @@ mainSearchQueryObject:{
 liveSearchPositionsObject:{
     liveSearchPositions:{left:0,top:0},
     setLiveSearchPositions:()=>{}
+},
+clickLogoObject:{
+    clickLogo:true,
+    setClickLogo:()=>{}
+},
+isDayObject:{
+    isDay:false,
+    setIsDay:()=>{}
 }
 
 
@@ -318,12 +352,19 @@ liveSearchPositionsObject:{
 
 //create Provider component
 export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
+    const [darkTheme,setDarkTheme]=useState(true);
+    const [isDay,setIsDay]=useState(false)
     const [menuItems,setMenuItems]=useState<MenuItem[]>([
         {id:"1",name:"Home",icon:<IoMdHome/>,isSelected:true},
         {id:"2",name:"Projects",icon:<MdCategory/>,isSelected:false},
         {id:"3",name:"Favorites" ,icon:<MdFavorite/>,isSelected:false},
 
     ]);
+    const [menu,setMenu]=useState<MenuItem[]>([
+        {id:"1",name:"Home",icon:<IoMdHome/>,isSelected:true},
+        {id:"2",name:"About",icon:<MdCategory/>,isSelected:false},
+        {id:"3",name:"Contact" ,icon:<MdFavorite/>,isSelected:false},
+    ])
     
     const [openSideBar,setOpenSideBar]=useState(()=>{
         const storedValue=localStorage.getItem("openedSideBar");
@@ -331,25 +372,25 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
     });
     const [openDarkModeMenu,setOpenDarkModeMenu]=useState(false);
     const [darkModeMenu,setDarkModeMenu]=useState<DarkModeMenu[]>(()=>{
-        const savedDarkMode=localStorage.getItem("isDarkMode");
-        const isDarkMode=savedDarkMode?JSON.parse(savedDarkMode):false;
+        // const savedDarkMode=localStorage.getItem("isDarkMode");
+        // const isDarkMode=savedDarkMode?JSON.parse(savedDarkMode):false;
         return [
             {
                 id:"1",
                 name:"Light",
                 icon:<MdLightMode  className="text-sky-500" fontSize="medium"/>,
-                isSelected:!isDarkMode
+                isSelected:false
     
              },
              {
                  id:"2",
                  name:"Dark",
                  icon:<MdDarkMode className="text-sky-500" fontSize="medium" />,
-                 isSelected:isDarkMode
+                 isSelected:true
              }
         ]
     });
-    
+    const [clickLogo,setClickLogo]=useState(true);
     const [showSearchBar,setShowSearchBar]=useState(false);
     const [isMobileView,setIsMobileView]=useState(false);
     const [showSideBar,setShowSideBar]=useState(true);
@@ -391,7 +432,9 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
      const {user,isLoaded,isSignedIn}=useUser();
      const [sortedProjects,setSortedProjects]=useState<Project[]>([]);
      const [sortingOptions,setSortingOptions]=useState<Category[]>(()=>{
+        
         const savedState=localStorage.getItem("sortingOptions");
+        
         return savedState
           ? JSON.parse(savedState)
           :[
@@ -411,6 +454,7 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             }  
         ]
      });
+     
      const [openAllComponentsWindow,setOpenAllComponentsWindow]=useState(false);
 
 
@@ -526,7 +570,12 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             selectedProjectToFilterObject:{selectedProjectToFilter,setSelectedProjectToFilter},
             openLiveSearchBarObject:{openLiveSearchBar,setOpenLiveSearchBar},
             liveSearchPositionsObject:{liveSearchPositions,setLiveSearchPositions},
-            mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery}
+            mainSearchQueryObject:{mainSearchQuery,setMainSearchQuery},
+            clickLogoObject:{clickLogo,setClickLogo},
+            darkThemeObject:{darkTheme,setDarkTheme},
+            isDayObject:{isDay,setIsDay},
+            menuObject:{menu,setMenu},
+            
 
 
 
