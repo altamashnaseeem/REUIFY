@@ -31,7 +31,7 @@ function page() {
 <p className='pl-5 pt-1.5'>We implement reasonable security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.</p>
 
 <h3 className='text-white mt-7'>4. Third-Party Services</h3>
-<p className='pl-5 pt-1.5'>We may use third-party services (e.g., hosting providers or analytics tools) that will have access to some of your data. These services are also committed to protecting your information.</p>
+<p className='pl-5 pt-1.5'>We may use third-party services that will have access to some of your data. These services are also committed to protecting your information.</p>
 
 <h3 className='text-white mt-7'>5. User Rights</h3>
 <p className='pl-5 pt-1.5'>You have the right to access, modify, or delete your personal information stored on our platform. You can contact us to request changes.</p>

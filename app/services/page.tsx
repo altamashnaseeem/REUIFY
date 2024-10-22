@@ -31,7 +31,7 @@ function page() {
 <p className='pl-5 pt-1.5'>All content provided by Reuify is the intellectual property of Altamash Naseem. Unauthorized use, reproduction, or distribution is prohibited.</p>
 
 <h3 className='text-white mt-7'>4. Limitation of Liability</h3>
-<p className='pl-5 pt-1.5'>Reuify is provided "as is" without warranties of any kind. We are not liable for any damages or losses resulting from your use of the app.</p>
+<p className='pl-5 pt-1.5'>Reuify is provided  without warranties of any kind. We are not liable for any damages or losses resulting from your use of the app.</p>
 
 <h3 className='text-white mt-7'>5. Termination</h3>
 <p className='pl-5 pt-1.5'>We reserve the right to terminate or suspend your account if you violate any of these terms.</p>
