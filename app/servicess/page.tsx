@@ -62,7 +62,7 @@ function Flexy(){
           <div className="lg:ml-[100px] pt-2 pl-8">
             <h5 className="text-white font-semibold mb-1">Legal</h5>
                  <div><Link href="/privacy" className="text-sm text-gray-400 hover:text-sky-400">Privacy</Link></div>
-                 <div><Link href="/services" className="text-sm text-gray-400 hover:text-sky-400">Term of Service</Link></div>
+                 <div><Link href="/servicess" className="text-sm text-gray-400 hover:text-sky-400">Term of Service</Link></div>
           </div>
            <div className="lg:ml-[50px] lg:p-0 p-2 pt-8 ">
            <h5 className="text-white font-semibold mb-2">Follow Us</h5>
