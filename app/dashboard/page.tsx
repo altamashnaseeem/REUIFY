@@ -63,7 +63,7 @@ return (
   <Toaster/>
   {openAllComponentsWindow && <SoftLayer/>}
   {openAllComponentsWindow && <SoftLayer/>}
-  {openComponentEditor && <SoftLayer/>}
+  {openComponentEditor && <Softlayer/>}
   {openAllProjectsWindow && <SoftLayer/>}
   {openComponentEditor  && <ComponentEditor/>}
 <IconsWindow onUpdateIconSelected={getTheIconSelected}/>
@@ -91,7 +91,11 @@ function SoftLayer(){
       <div className="w-full h-full fixed top-0 z-40 right-0 bg-black opacity-30"></div>
     )
   }
-
+function Softlayer(){
+  return (
+    <div className="w-full h-full fixed top-0 z-40 right-0 bg-black"></div>
+  )
+}
 function LiveSearchBar(){
   const {openLiveSearchBarObject:{openLiveSearchBar,setOpenLiveSearchBar},
 liveSearchPositionsObject:{liveSearchPositions},

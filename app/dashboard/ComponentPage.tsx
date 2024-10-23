@@ -19,7 +19,7 @@ export default function ComponentPage() {
           {showSearchBar && isMobileView && showComponentPage && <SoftLayer/>}
           <TopBar searchInput={searchInput} setSearchInput={setSearchInput}/>
       <PageWrapper>
-  
+                      
       {selectedProject?.components.length === 0 && <EmptyProjectsPlaceholder/>}
       <AllComponents searchInput={searchInput}/>
       </PageWrapper>

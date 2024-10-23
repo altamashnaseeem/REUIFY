@@ -22,7 +22,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SettingsOverscanOutlinedIcon from '@mui/icons-material/SettingsOverscanOutlined';
 import { PageWrapper } from '@/app/PageWrapper';
-import { divide } from 'lodash';
+
 function ComponentEditor() {
     const {openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
        allProjectsObject:{allProjects,setAllProjects},
@@ -32,6 +32,7 @@ function ComponentEditor() {
        isDayObject:{isDay}
 
   }=UseAppContext()
+
 const [code,setCode]=useState(selectedComponent? (selectedComponent.code):(`<></>`));
 
 const [inputName,setInputName]=useState<string>("");
@@ -44,7 +45,7 @@ const editorInstanceRef=useRef<any>(null);
 const formatCode=async (codeToFormat:string)=>{
     if(aceEditorRef.current){
         try{
-          const formatted=await prettier.format(code,{
+          const formatted=await prettier.format(codeToFormat,{
             parser:"babel",
             plugins:[babelPlugin,estreePlugin],
             singleQuote:true,
@@ -62,7 +63,7 @@ const formatCode=async (codeToFormat:string)=>{
 }
 const handleChange=(newValue:string)=>{
     setCode(newValue);
-
+    
 }
 function saveCompnent(){
 // check if the project name is not empty
@@ -287,17 +288,17 @@ const resetEditor = () => {
 };
 
 const [isZoom,setIsZoom]=useState(false);
-
+const scope = { React };
   return (
     <div 
      style={{display: openComponentEditor?"flex":"none"}}
      className={`w-[96%] h-[735px] max-sm:h-[90%] max-sm:flex-col border-slate-100 flex-row overflow-hidden ${darkTheme?"bg-slate-950":"bg-white"} absolute left-1/2 top-2 rounded-2xl shadow-md -translate-x-1/2 z-50`}
     >
     {/* left part */}
-
+  
      {isZoom?( <div className={` w-3/5 max-sm:w-full h-full`}> <div className={` border border-slate-200  rounded-md relative mt-1`}>
         <span onClick={()=>setIsZoom(!isZoom)} className='absolute top-0.5 left-[750px] cursor-pointer z-10 text-gray-400 '><SettingsOverscanOutlinedIcon/></span>
-         
+           
           <AceEditor
           ref={aceEditorRef}
           onLoad={(editorInstance)=>{
@@ -409,7 +410,7 @@ const [isZoom,setIsZoom]=useState(false);
         </div>
         <div className={` border border-slate-200  rounded-md relative mt-1`}>
         <span onClick={()=>setIsZoom(!isZoom)} className='absolute top-0.5 left-[668px] cursor-pointer z-10 text-gray-400 '><SettingsOverscanOutlinedIcon/></span>
-         
+           
           <AceEditor
           ref={aceEditorRef}
           onLoad={(editorInstance)=>{
@@ -438,10 +439,10 @@ const [isZoom,setIsZoom]=useState(false);
        </div>
       </div>)}
       {/* Right Part */}
-      <div className={`${darkTheme?"bg-slate-800":"bg-slate-50"} w-2/5 max-sm:w-full max-sm:border-t border-l max-sm:mt-5 border-slate-100 h-full`}>
+      <div className={`bg-slate-50 w-2/5 max-sm:w-full max-sm:border-t border-l max-sm:mt-5 border-slate-100 h-full`}>
       
       
-       <LiveProvider code={code} noInline={false} language='jsx'>
+       <LiveProvider code={code} noInline={false} scope={scope} language='jsx'>
         <div className='tailwind'>
            <LiveError className="rounded-lg border-gray-200 p-4 text-red-600"/>
              <LivePreview className="rounded-lg border-gray-200  p-4"/>

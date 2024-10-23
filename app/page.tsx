@@ -174,6 +174,8 @@ function Features() {
 
 
 function Navbar() {
+  const {user}=useUser();
+
   return (
 
     <div className='flex justify-between p-[8px] pt-4 px-6 max-sm:flex-col max-sm:items-center'>
@@ -181,14 +183,14 @@ function Navbar() {
       {/* <MenuNavbar /> */}
        <div className="flex gap-2 ">
        <Buttons />
-       <ProfileAccount/>
+       {user?<ProfileAccount/>:""}
        </div>
     </div>
   );
 }
 function ProfileAccount(){
   return (
-      <div className="flex gap-3 items-center items-center">
+      <div className="flex gap-3 items-center items-center z-20 lg:mt-2 sm:mt-0">
           <div className="w-[36px] h-[37px] flex items-center justify-center rounded-full pb-2">
             <UserButton/>
 
@@ -260,8 +262,9 @@ function CTAsection() {
 
 function Logo() {
   const { darkThemeObject: { darkTheme } } = UseAppContext();
+  const { user } = useUser();
   return (
-    <div className="flex gap-2 items-center  ">
+    <div className={` ${user?"mr-3":"mr-10"} flex gap-2 items-center `}>
       <CgComponents className='text-sky-600 text-[32px]' />
       {/* App Name */}
       <div className='flex gap-1 text-[22px]'>
@@ -284,16 +287,16 @@ function Buttons() {
 
 
   return (
-    <div className='flex gap-2 max-sm:flex-col max-sm:w-full max-sm:mt-8  z-10'>
+    <div className='flex gap-2  max-sm:mb-9 max-sm:w-full max-sm:mt-8 z-10'>
       {!user ? (
         <>
           <Link href="/sign-in">
-            <button className=' max-sm:w-full text-sm text-gray-950 bg-white  p-[8px] px-6 rounded-full hover:opacity-80'>
+            <button className='lg:mt-2 sm:mt-0 max-sm:w-full text-sm text-gray-950 bg-white  p-[8px] px-6 rounded-full hover:opacity-80'>
               Sign In
             </button>
           </Link>
           <Link href="/sign-up">
-            <button className='max-sm:w-full text-sm  text-white bg-gray-700  p-[8px] px-6 rounded-full hover:opacity-60 '>
+            <button className='lg:mt-2 sm:mt-0 max-sm:w-full text-sm  text-white bg-gray-700  p-[8px] px-6 rounded-full hover:opacity-60 '>
               Sign Up
             </button>
           </Link>
@@ -301,7 +304,7 @@ function Buttons() {
       ) : (
         <motion.div whileHover={{scale:1.1}}>
           <Link href='/dashboard'>
-            <button className={`max-sm:w-full text-sm  ${darkTheme ? "text-gray-900 bg-white" : "bg-slate-900 text-slate-100"} p-[8px] px-4 rounded-full font-semibold cursor-pointer z-50 hover:opacity-80`}>your work</button>
+            <button className={`max-sm:w-full text-sm  ${darkTheme ? "text-gray-900 bg-white" : "bg-slate-900 text-slate-100"} lg:mt-2 sm:mt-0 p-[8px] px-4 rounded-full font-semibold cursor-pointer z-50 hover:opacity-80`}>your work</button>
           </Link>
         </motion.div>
       )}
