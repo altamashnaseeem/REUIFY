@@ -25,6 +25,7 @@ import {UserButton} from "@clerk/nextjs";
 
 
 
+
 function Page() {
   return (
     <div className="bg-gray-900">
@@ -59,9 +60,9 @@ function Flexy(){
            </div>
            <div className="text-white font-semibold lg:mb-2 lg:pt-0 lg:p-0 pt-8 p-2 ">
            <h5 className="text-white font-semibold mb-2">Contact Us</h5>
-            <p className="text-gray-400 text-sm text-rose-700">altamashnaseem7@gmail.com</p>
+            <p className="text-gray-400 text-sm text-indigo-900">altamashnaseem7@gmail.com</p>
            </div>
-
+             
       </div>
     </div>
   )
@@ -144,7 +145,7 @@ function Features() {
       <AnimationEffect>
       <div className="mx-auto px-4">
         <h2 className="text-2xl uppercase font-semibold tracking-widest text-center  bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-transparent pb-8">Key Features</h2>
-        <div className="mt-7 grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-1 gap-8 ">
+        <div className="mt-7 grid lg:grid-cols-3 sm:grid-cols-1 md:grid-cols-1 gap-8 ">
           {
             features.map((feature, index) => (
             
@@ -200,7 +201,7 @@ function ProfileAccount(){
 }
 
 function CTAsection() {
-  
+  const {user}=useUser();
   const { darkThemeObject: { darkTheme },openProjectWindowObject:{setOpenProjectWindow} } = UseAppContext();
   return (
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
@@ -247,11 +248,15 @@ function CTAsection() {
          </AnimationEffect>
            <AnimationEffect>          <p className={`max-sm:w-full font-poppins text-center font-normal text-xl text-gray-400 w-[650px] leading-8 `}> <span className='text-sky-500'>Build and store your custom components</span>, ready to <span className='text-sky-500'>reuse</span> whenever you need them. save time by using components from our growing library. Start exploring <span className='text-sky-500'>today!</span></p>
            </AnimationEffect>
-          <Link href="/dashboard">
+         {user? <Link href="/dashboard">
           <AnimationEffect><button onClick={()=>setOpenProjectWindow(true)} className='bg-white text-gray-900 rounded-md p-[7px] px-4 hover:opacity-80 font-medium  text-xl relative z-30'>
             Get started
           </button></AnimationEffect>
-          </Link>
+          </Link>: <Link href="/sign-up">
+          <AnimationEffect><button onClick={()=>setOpenProjectWindow(true)} className='bg-white text-gray-900 rounded-md p-[7px] px-4 hover:opacity-80 font-medium  text-xl relative z-30'>
+            Get started
+          </button></AnimationEffect>
+          </Link>}
         </div>
       </div>
     </div>

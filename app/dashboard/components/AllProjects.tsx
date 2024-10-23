@@ -25,7 +25,7 @@ function AllProjects() {
             <span className={`${darkTheme?"text-slate-200":"text-slate-900"} font-semibold text-lg`}>All Projects</span>
              <span 
              onClick={()=>setOpenAllProjectsWindow(true)}
-             className='text-[14px] text-sky-600 cursor-pointer '>More</span>
+             className='text-[14px] bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-transparent cursor-pointer '>More</span>
         </div>
         {!isLoading && allProjects.length > 0 && (
           <motion.div whileHover={{scale:1.1}}>
