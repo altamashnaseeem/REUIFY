@@ -174,7 +174,7 @@ export function openTheDeleteWindow({
   setSelectedComponent: (component: Component) => void;
   setSelectedProject: (project: Project) => void;
   setOpenDeleteWindow: (open: boolean) => void;
-  setProjectCard: React.Dispatch<React.SetStateAction<boolean>>;
+  setProjectCard: (open: boolean) => void;
 }) {
   // Get the project and set it in the selectedProject state
   const project = allProjects.find((project) =>
