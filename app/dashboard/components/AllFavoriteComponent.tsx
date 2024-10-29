@@ -245,7 +245,8 @@ function SingleComponent({item}:{item:Component}){
     selectedProjectObject:{selectedProject,setSelectedProject},
     openDeleteWindowObject:{setOpenDeleteWindow},
     openComponentEditorObject:{setOpenComponentEditor},
-    darkThemeObject:{darkTheme}
+    darkThemeObject:{darkTheme},
+    projectCardObject:{setProjectCard}
 }=UseAppContext();
     return (
         <div className={` ${darkTheme?"bg-slate-950":"bg-white"} w-full  rounded-md flex gap-3 items-center justify-between p-3 px-5`}>
@@ -276,6 +277,7 @@ function SingleComponent({item}:{item:Component}){
                   setSelectedComponent:setSelectedComponent,
                   setOpenComponentEditor:setOpenComponentEditor,
                   setSelectedProject:setSelectedProject,
+                  setProjectCard
                 })
                }
             className={`rounded-full ${darkTheme?"bg-slate-900 hover:bg-slate-800":"bg-slate-200 hover:bg-slate-300"} w-7 h-7 flex items-center justify-center cursor-pointer`}>
@@ -290,6 +292,7 @@ function SingleComponent({item}:{item:Component}){
                     setSelectedComponent:setSelectedComponent,
                     setSelectedProject:setSelectedProject,
                     setOpenDeleteWindow:setOpenDeleteWindow,
+                    setProjectCard
 
                   })
                }
