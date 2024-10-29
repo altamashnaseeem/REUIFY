@@ -175,7 +175,16 @@ function ProfileAccount(){
     return (
         <div className="flex gap-3 items-center">
             <div className="w-[36px] h-[37px] flex items-center justify-center rounded-full">
-              <UserButton/>
+              <UserButton
+               appearance={{
+                elements: {
+                  userButtonPopoverFooter: {
+                    display: 'none',
+                  },
+                },
+    
+              }}
+              />
 
             </div>
         </div>
