@@ -144,7 +144,7 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
             onClick={openFilterDropDownFx}
             style={{opacity:allFavoriteComponents.length>0 ? 1:0.5}}
             disabled={allFavoriteComponents.length>0 ?false:true}
-            className='bg-sky-500 hover:bg-sky-400 ml-2 p-[10px] flex w-[20%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
+            className='bg-gradient-to-r from-teal-400 to-blue-500 hover:bg-sky-400 ml-2 p-[10px] flex w-[20%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
                 <FilterListRounded sx={{fontSize:17}}/>
                 <span className='max-md:hidden'>
                     Filter By: <span className='font-semibold'>Project</span></span>

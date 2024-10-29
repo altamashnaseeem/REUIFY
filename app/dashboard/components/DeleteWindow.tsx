@@ -10,7 +10,8 @@ function DeleteWindow() {
           selectedComponentObject:{selectedComponent,setSelectedComponent},
           allProjectsObject:{allProjects,setAllProjects},
           openAllProjectsWindowObject:{openAllProjectsWindow},
-          darkThemeObject:{darkTheme}
+          darkThemeObject:{darkTheme},
+          projectCardObject:{projectCard}
 }=UseAppContext();
 async function deleteProjectFunction(){
   if(!selectedProject?._id){
@@ -94,7 +95,7 @@ async function deleteComponentFunction(){
 
 
 }
-
+  
   return (
     <div
     style={{visibility:openDeleteWindow?"visible":"hidden"}}
@@ -116,7 +117,7 @@ async function deleteComponentFunction(){
         {/* main message */}
         <span className={` ${darkTheme?"text-slate-100":"text-slate-900"} font-semibold`}>
           Permanently delete this{" "}
-          {openAllProjectsWindow ? "project":"component"}?
+          {openAllProjectsWindow || projectCard ? "project":"component"}?
           
           </span>
         {/* second  message */}
@@ -135,13 +136,13 @@ async function deleteComponentFunction(){
             Cancel
         </button>
         <button
-        onClick={openAllProjectsWindow?deleteProjectFunction:deleteComponentFunction}
+        onClick={openAllProjectsWindow || projectCard ?deleteProjectFunction:deleteComponentFunction}
 
         className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600'
         >
             Delete{" "}
-            {openAllProjectsWindow?"project":"component"}
-
+            {openAllProjectsWindow || projectCard ?"project":"component"}
+                            
         </button>
       </div>
     </div>

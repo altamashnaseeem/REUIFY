@@ -13,7 +13,8 @@ function DropDown() {
        selectedProjectObject:{selectedProject,setSelectedProject},
        allProjectsObject:{allProjects,setAllProjects},
        openComponentEditorObject:{openComponentEditor,setOpenComponentEditor},
-       darkThemeObject:{darkTheme}
+       darkThemeObject:{darkTheme},
+       projectCardObject:{setProjectCard}
 }=UseAppContext();
 const dropDownRef=useRef<HTMLDivElement>(null);
 useEffect(()=>{
@@ -62,8 +63,11 @@ useEffect(()=>{
 
 
 function deleteComponentFunction(){
+  setProjectCard(false)
     setOpenDeleteWindow(true)
     setOpenDropDown(false);
+    
+
     
 }
 

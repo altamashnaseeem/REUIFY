@@ -194,13 +194,13 @@ useEffect(()=>{
   }
  }
     return (
-       <div className={`${isMobileView ? "w-[80%]":"w-[40%]"} h-[288px] ${darkTheme?"bg-slate-950":"border border-slate-50 bg-white"} rounded-md shadow-md ${openProjectWindow?"absolute":"hidden"} left-1/2 top-24 -translate-x-1/2 z-50`}>
+       <div className={`${isMobileView ? "w-[80%]":"w-[40%]"} h-[288px] ${darkTheme?"bg-slate-950":"border border-slate-50 bg-white"} rounded-md shadow-md ${openProjectWindow?"fixed":"hidden"} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50`}>
         <div className="flex justify-between items-center pt-7 px-7">
             <div className="flex items-center gap-2">
-                <div className={`w-[30px] h-[30px] ${darkTheme?"bg-sky-900":"bg-sky-200"} rounded-full flex items-center justify-center`}>
+                <div className={`w-[30px] h-[30px] ${darkTheme?"bg-slate-800":"bg-sky-200"} rounded-full flex items-center justify-center`}>
                     <CategoryIcon 
                      sx={{fontSize:17}}
-                     className="text-sky-400 text-[12px]"
+                     className={`${darkTheme?"text-sky-500":"text-sky-400"} text-[12px]`}
                     />
 
                 </div>
@@ -230,7 +230,7 @@ useEffect(()=>{
                   onChange={handleInputUpdate}
                   placeholder="Enter Category Name..."
                   ref={inputRef}
-                  className={`p-[10px] text-[12px] w-full rounded-md  outline-none ${darkTheme?"bg-slate-900":"border"}`}
+                  className={`p-[10px] text-[12px] w-full rounded-md  outline-none ${darkTheme?"bg-slate-900 text-slate-400":"border"}`}
                 />
                 {/* Error Message */}
                 <div className={`flex items-center gap-2 mt-2 ${errorMessage?"":"hidden"}`}>
@@ -238,7 +238,7 @@ useEffect(()=>{
                  sx={{fontSize:14}}
                  className="text-red-500"
                 />
-
+                   
                 <span className="text-[12px] text-red-500 mt-[2px]">{errorMessage}</span>
               
                 </div>
@@ -257,8 +257,8 @@ useEffect(()=>{
             </button>
            <button  
            onClick={selectedProject?editTheProject:addNewProject}
-           className="bg-sky-500 hover:bg-sky-600 text-white text-[12px] p-2 px-3 rounded-md transition-all ">
-               {!selectedProject?"Add Project":"Editing Project"}
+           className={`bg-gradient-to-r from-teal-400 to-blue-500 text-white  hover:opacity-80  text-[12px] p-2 px-3 rounded-md transition-all`}>
+               {!selectedProject?"Add Project":"Edit Project"}
            </button>
           </div>
        </div>

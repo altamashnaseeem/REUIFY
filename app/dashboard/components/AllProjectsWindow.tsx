@@ -120,7 +120,7 @@ const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
 
             <button 
             onClick={()=>setOpenProjectWindow(true)}
-            className='bg-sky-500 ml-2 p-[10px] flex w-[15%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
+            className='bg-gradient-to-r from-teal-400 to-blue-500 ml-2 p-[10px] flex w-[15%] text-sm rounded-md text-white items-center justify-center max-lg:w-[25%]'>
                 <AddOutlined sx={{fontSize:17}}
                 
                 />
@@ -267,7 +267,7 @@ darkThemeObject:{darkTheme}
                     <span className={`${darkTheme?"text-slate-200":"text-slate-900"} font-semibold`}>{project.name}</span>
                     <span onClick={openTheProject} className={` ${darkTheme?"text-sky-400 bg-slate-700":"text-sky-400 bg-sky-100"}  text-[12px] w-[20px]  rounded-md text-center hover:text-sky-500`}>{project.components.length}</span>
                 </div>
-            </div>
+            </div>ll
             {/* Action Buttons */}
           <div className='flex gap-2 items-center'>
             <div 

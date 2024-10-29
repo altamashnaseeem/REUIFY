@@ -40,6 +40,11 @@ export interface Category{
 
 }
 interface AppContexttype{
+    projectCardObject:{
+        projectCard:boolean;
+        setProjectCard:React.Dispatch<React.SetStateAction<boolean>>
+    };
+
     darkThemeObject:{
         darkTheme:boolean;
         setDarkTheme:React.Dispatch<React.SetStateAction<boolean>>
@@ -196,6 +201,11 @@ isDayObject:{
 
 //create a default state
 const defaultState:AppContexttype={
+    projectCardObject:{
+        projectCard:true,
+        setProjectCard:()=>{}
+    },
+
     darkThemeObject:{
         darkTheme:true,
         setDarkTheme:()=>{}
@@ -390,6 +400,7 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
              }
         ]
     });
+    const [projectCard,setProjectCard]=useState(true);
     const [clickLogo,setClickLogo]=useState(true);
     const [showSearchBar,setShowSearchBar]=useState(false);
     const [isMobileView,setIsMobileView]=useState(false);
@@ -575,6 +586,7 @@ export const AppProvider:React.FC<{children:ReactNode}>=({children})=>{
             darkThemeObject:{darkTheme,setDarkTheme},
             isDayObject:{isDay,setIsDay},
             menuObject:{menu,setMenu},
+            projectCardObject:{projectCard,setProjectCard}
             
 
 

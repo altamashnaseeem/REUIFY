@@ -17,6 +17,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "ace-code-editor": "^1.2.3",
     "framer-motion": "^11.11.9",
+    "html2canvas": "^1.4.1",
     "lodash": "^4.17.21",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.3",

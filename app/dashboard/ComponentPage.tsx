@@ -50,7 +50,7 @@ export function EmptyProjectsPlaceholder(){
           Please click below to add your first component.
         </p>
       </div>
-      <button  onClick={()=>setOpenComponentEditor(true)} className='flex gap-1 items-center bg-sky-500 p-2 rounded-md text-white text-center text-[12px] px-3 pr-5'>
+      <button  onClick={()=>setOpenComponentEditor(true)} className='flex gap-1 items-center bg-gradient-to-r from-teal-400 to-blue-500 p-2 rounded-md text-white text-center text-[12px] px-3 pr-5'>
         <AddIcon/>
         <span className='text-sm' >Add new component</span>
       </button>

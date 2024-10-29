@@ -402,7 +402,7 @@ const scope = { React };
             <Toggle/>
             <button
             onClick={saveCompnent}
-            className='bg-sky-500 hover:bg-sky-600 text-white text-[12px] p-2 rounded-md transition-all '
+            className='bg-gradient-to-r from-teal-400 to-blue-500 hover:bg-sky-600 text-white text-[12px] p-2 rounded-md transition-all '
             >
                 <Save sx={{fontSize:17}}/>
 

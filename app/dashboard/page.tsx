@@ -39,7 +39,7 @@ function Dashboard(){
   showSearchBarObject:{showSearchBar},
   mainSearchQueryObject:{mainSearchQuery},
   clickLogoObject:{clickLogo}
-
+  
 }=
     UseAppContext()
 const [selectedIcon,setSelectedIcon]=useState<SelectedIcon>({
@@ -74,7 +74,7 @@ return (
 {openIconWindow && <SoftLayer/>}
 {/* <Sidebar/> */}
 {showComponentPage && openDropDown && <DropDown/>}
-{(!showComponentPage && clickLogo)?<ContentArea/>:<ComponentPage/>}
+{(!showComponentPage && clickLogo )?<ContentArea/>:<ComponentPage/>}
 
  
 </div>
