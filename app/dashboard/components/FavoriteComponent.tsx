@@ -133,7 +133,7 @@ function SingleFavoriteComponent({ component }: { component: Component }) {
               setSelectedComponent,
               setOpenComponentEditor,
               setSelectedProject,
-              setProjectCard
+              setProjectCard,
             })
           }
           className={`${darkTheme ? "bg-slate-800 " : "bg-slate-50"}  rounded-full w-7 h-7 flex items-center justify-center  cursor-pointer`}>
@@ -199,7 +199,7 @@ export function openComponent({
   setSelectedComponent,
   setOpenComponentEditor,
   setSelectedProject,
-  setProjectCard
+  setProjectCard,
 }: {
   component: Component;
   allProjects: Project[];
