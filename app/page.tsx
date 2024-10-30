@@ -255,11 +255,11 @@ function CTAsection() {
         <div className='flex flex-col items-center gap-6 mx-16 '>
 
           <AnimationEffect>
-            <h1 className={`text-center font-extrabold text-5xl max-md:text-5xl font-poppins tracking-tight ${darkTheme ? "text-white" : "text-slate-900"}`}>Build and Store <span className={`${darkTheme ? "text-white" : "text-sky-400"} `}>Components</span>  <span className="block">
-              Using JSX Code with Tailwind
+            <h1 className={`text-center font-extrabold text-5xl max-md:text-5xl font-poppins tracking-tight ${darkTheme ? "text-white" : "text-slate-900"}`}>Build and Store <span className={`${darkTheme ? "text-white" : "text-sky-400"} `}>React Components</span>  <span className="block">
+              with JSX Code and Tailwind
             </span></h1>
           </AnimationEffect>
-          <AnimationEffect>          <p className={`max-sm:w-full font-poppins text-center font-normal text-xl text-gray-400 w-[650px] leading-8 `}> <span className='text-sky-500'>Build and store your custom components</span>, ready to <span className='text-sky-500'>reuse</span> whenever you need them. save time by using components from our growing library. Start exploring <span className='text-sky-500'>today!</span></p>
+          <AnimationEffect>          <p className={`max-sm:w-full font-poppins text-center font-normal text-xl text-gray-400 w-[650px] leading-8 `}> <span className='text-sky-500'>Build and store your own React components</span>, ready to <span className='text-sky-500'>reuse</span> whenever you need them. save time by using components from our growing library. Start exploring <span className='text-sky-500'>today!</span></p>
           </AnimationEffect>
           {user ? <Link href="/dashboard">
             <AnimationEffect><button onClick={() => setOpenProjectWindow(true)} className='bg-white text-gray-900 rounded-md p-[7px] px-4 hover:opacity-80 font-medium  text-xl relative z-30'>
